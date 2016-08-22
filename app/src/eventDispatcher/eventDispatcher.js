@@ -16,7 +16,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
 
                 var mAndF  = mapAndFilterStream(streamType);
                 var _s     = serveToHandlers(_handlers);
-                var stream = rx.Observable.fromEvent(eventstore.subscribeToAllFrom(), 'event')
+                var stream = rx.Observable.fromEvent(eventstore.subscribeToAllFrom("$all"), 'event')
                     .filter(mAndF.isValidStreamType)
                     .map(mAndF.transformEvent   );
 

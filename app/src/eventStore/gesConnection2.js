@@ -9,7 +9,7 @@ module.exports = function(eventstoreclient, logger, extend) {
         if (!connection) {
             logger.debug('creatextending gesConnection');
             logger.trace('IP:' + options.host + ':1113');
-            connection = eventstoreclient({
+            connection = eventstoreclient.Connection({
                 host: options.host,
                 port: 1113
             })
