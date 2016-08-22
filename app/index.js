@@ -13,7 +13,11 @@ module.exports = function(_options) {
         }
     };
     extend(options, _options || {});
-    return  registry(options);
+    var container = registry(options);
+    console.log('==========container=========');
+    console.log(container); 
+    console.log('==========END container=========');
+    return  container;
 };
 
 

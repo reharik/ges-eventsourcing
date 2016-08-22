@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function(readstorerepository,
+module.exports = function(rsRepository,
                           appfuncs,
                           eventstore,
                           R,
@@ -30,7 +30,7 @@ module.exports = function(readstorerepository,
         var isIdempotent = R.compose(R.lift(R.equals(true)), fh.safeProp('isIdempotent'));
 
         //checkDbForIdempotency  JSON -> Future<string|JSON>
-        var checkDbForIdempotency=  R.curry((hName,event) => readstorerepository.checkIdempotency(fh.getSafeValue('originalPosition', event), hName));
+        var checkDbForIdempotency=  R.curry((hName,event) => rsRepository.checkIdempotency(fh.getSafeValue('originalPosition', event), hName));
 
         //checkIfProcessed:: JSON -> Future<string|JSON>
         var checkIdempotency = (event,hName) => R.compose(R.map(ifNotIdemotent), R.map(isIdempotent), checkDbForIdempotency(hName))(event);
@@ -50,7 +50,7 @@ module.exports = function(readstorerepository,
         };
 
         //recordEventProcessed  bool -> Future<string|JSON>
-        var recordEventProcessed = (event,hName) =>  readstorerepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), hName);
+        var recordEventProcessed = (event,hName) =>  rsRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), hName);
 
         //notification  string -> string -> Future<string|JSON>
         var notification = R.curry((e,y,x) => {
