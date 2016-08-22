@@ -3,12 +3,12 @@
  */
 "use strict";
 
-module.exports = function(appendToStreamPromise, readStreamEventsForwardPromise, gesConnection, gesclient, extend ) {
+module.exports = function(appendToStreamPromise, readStreamEventsForwardPromise, gesConnection, gesConnection2, gesclient, extend ) {
     return function eventstore(_options) {
         return {
             appendToStreamPromise         : appendToStreamPromise,
             readStreamEventsForwardPromise: readStreamEventsForwardPromise,
-            subscribeToAllFrom            : gesConnection.subscribeToAllFrom.bind(gesConnection),
+            subscribeToAllFrom            : gesConnection2.subscribeToAllFrom.bind(gesConnection2),
             gesClientHelpers              : {
                 getStreamMetadata   : gesConnection.getStreamMetadata.bind(gesConnection),
                 setStreamMetadata   : gesConnection.setStreamMetadata.bind(gesConnection),

@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function appendToStreamPromise(gesConnection, logger, invariant, Promise, R, JSON) {
+module.exports = function appendToStreamPromise(gesConnection2, logger, invariant, Promise, R, JSON) {
     return R.curry(function (streamName, data) {
         invariant(
             streamName,
@@ -18,7 +18,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
             'must pass data with at least one event'
         );
         logger.trace('wrapping appendToStream in Promise');
-        return Promise.promisify(gesConnection.appendToStream)(streamName, data);
+        return Promise.promisify(gesConnection2.writeEvents)(streamName, data);
         //
         // return new Promise(function (resolve, reject) {
         //     gesConnection.appendToStream(streamName, data, function (err, result) {

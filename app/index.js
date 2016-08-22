@@ -9,15 +9,11 @@ var registry = require('./registry');
 module.exports = function(_options) {
     var options = {
         logger: {
-            moduleName: 'eventsourcing'
+            moduleName: 'EventModels'
         }
     };
     extend(options, _options || {});
-    var container = registry(options);
-    console.log('==========container=========');
-    console.log(container); 
-    console.log('==========END container=========');
-    return  container;
+    return  registry(options);
 };
 
 
