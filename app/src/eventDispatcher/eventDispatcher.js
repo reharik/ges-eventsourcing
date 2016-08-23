@@ -16,7 +16,10 @@ var eventDispatcher = function eventDispatcher(eventstore,
 
                 var mAndF  = mapAndFilterStream(streamType);
                 var _s     = serveToHandlers(_handlers);
-                var stream = rx.Observable.fromEvent(eventstore.subscribeToAllFrom("$all"), 'event')
+                var stream = rx.Observable.fromCallback(eventstore.subscribeToAllFrom("$all", 0, {
+                    'username': "admin",
+                    'password': "changeit"
+                }, x=> {return x;})
                     .filter(mAndF.isValidStreamType)
                     .map(mAndF.transformEvent   );
 

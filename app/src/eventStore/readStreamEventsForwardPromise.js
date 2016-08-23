@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function(gesConnection2, logger, invariant, Promise, JSON) {
+module.exports = function(gesConnection, logger, invariant, Promise, JSON) {
     return function (streamName, skipTake) {
         invariant(
             streamName,
@@ -16,7 +16,8 @@ module.exports = function(gesConnection2, logger, invariant, Promise, JSON) {
 
         logger.trace('wrapping readStreamEventsForward in Promise');
         return new Promise(function (resolve, reject) {
-            gesConnection2.readStreamEventsForward(streamName,  function (err, results) {
+            gesConnection.readStreamEventsForward(streamName, skipTake, function (err, results) {
+                // gesConnection2.readStreamEventsForward(streamName,  function (err, results) {
                 logger.trace('readStreamEventsForward callback');
                 if (err) {
                     logger.error('rejecting readStreamEventsForward Promise with error message: ' + err);
