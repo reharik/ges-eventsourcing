@@ -2,7 +2,7 @@
 
 
 module.exports = function(coqueue, eventHandlerWorkflow, logger, co, JSON) {
-    return class eventHandlerBase {
+    return class eventHandler {
         constructor() {
             this.queue       = new coqueue();
             this.handlerName = '';

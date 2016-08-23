@@ -28,7 +28,6 @@
     "co-queue": "^2.0.0",
     "corelogger": "git://github.com/reharik/core_logger.git",
     "dagon": "git://github.com/reharik/dagon.git",
-    "event-store-client": "0.0.9",
     "extend": "^3.0.0",
     "ges-client": "0.10.0",
     "invariant": "^2.1.0",

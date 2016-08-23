@@ -18,21 +18,19 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
             'must pass data with at least one event'
         );
         logger.trace('wrapping appendToStream in Promise');
-        return Promise.promisify(gesConnection.appendToStream)(streamName, data);
-        //        return Promise.promisify(gesConnection2.writeEvents)(streamName, data);
 
-        // return new Promise(function (resolve, reject) {
-        //     gesConnection.appendToStream(streamName, data, function (err, result) {
-        //         logger.trace('appendToStream callback');
-        //         if (err) {
-        //             logger.debug('rejecting appendToStream Promise with error message: ' + err);
-        //             reject(err);
-        //         } else {
-        //             logger.debug('resolving appendToStream Promise with response: ' + JSON.stringify(result));
-        //             resolve(result);
-        //         }
-        //     });
-        // });
+        return new Promise(function (resolve, reject) {
+            gesConnection.appendToStream(streamName, data, function (err, result) {
+                logger.trace('appendToStream callback');
+                if (err) {
+                    logger.debug('rejecting appendToStream Promise with error message: ' + err);
+                    reject(err);
+                } else {
+                    logger.debug('resolving appendToStream Promise with response: ' + JSON.stringify(result));
+                    resolve(result);
+                }
+            });
+        });
     });
 };
 
