@@ -17,7 +17,6 @@ module.exports = function(gesConnection, logger, invariant, Promise, JSON) {
         logger.trace('wrapping readStreamEventsForward in Promise');
         return new Promise(function (resolve, reject) {
             gesConnection.readStreamEventsForward(streamName, skipTake, function (err, results) {
-                // gesConnection2.readStreamEventsForward(streamName,  function (err, results) {
                 logger.trace('readStreamEventsForward callback');
                 if (err) {
                     logger.error('rejecting readStreamEventsForward Promise with error message: ' + err);

@@ -22,7 +22,7 @@
   "dependencies": {
     "JSON": "^1.0.0",
     "appdomain": "git://github.com/reharik/mf_domain.git",
-    "bluebird": "^2.9.27",
+    "bluebird": "^3.4.1",
     "buffer": "^3.4.2",
     "co": "^4.6.0",
     "co-queue": "^2.0.0",

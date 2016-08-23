@@ -38,7 +38,7 @@ module.exports = function(rsRepository,
         var wrapHandlerFunction = (e, f) => {
             var contLens = R.lensProp('continuationId');
             var continuationId = R.view(contLens, fh.getSafeValue('metadata', e));
-            co(f(fh.getSafeValue('data', e), continuationId))
+            return co(f(fh.getSafeValue('data', e), continuationId))
                 .catch(function(err) {
                     logger.error('error thrown: ' + err);
                     return {
