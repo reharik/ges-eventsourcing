@@ -45,6 +45,7 @@ module.exports = function(R, _fantasy, buffer, logger) {
         }
     };
 
+    var executeFutureToPromise = f => f.fork(reject => {return new Promise.reject(reject.value())}, resolve => {return Pomise.resolve(resolve.value())});
 
     var isTrue = R.compose(R.map(R.lift(R.equals(true))));
 
@@ -111,6 +112,7 @@ module.exports = function(R, _fantasy, buffer, logger) {
         tryStringify,
         isTrue,
         boolToMaybe,
+        executeFutureToPromise,
         log,
         logPlus,
         logFork,
