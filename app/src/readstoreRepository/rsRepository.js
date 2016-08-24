@@ -50,7 +50,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
 
         var query = function(query) {
             logger.debug(query);
-            var handlerResult = r=>_fantasy.Maybe.of(r);
+            var handlerResult =  fh.safeProp('rows');
             return pgFuture(query, handlerResult);
         };
 

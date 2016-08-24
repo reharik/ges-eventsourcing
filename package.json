@@ -34,8 +34,8 @@
     "is-object-empty": "^1.0.0",
     "pg": "^4.4.3",
     "pg-bluebird": "^1.0.8",
-    "ramda": "^0.18.0",
-    "ramda-fantasy": "^0.4.1",
+    "ramda": "^0.22.1",
+    "ramda-fantasy": "^0.6.1",
     "rx": "^2.5.3",
     "treis": "^2.3.16",
     "uuid": "^2.0.1"
