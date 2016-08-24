@@ -2,7 +2,7 @@
  * Created by rharik on 11/1/15.
  */
 
-module.exports = function(R, _fantasy, buffer, logger) {
+module.exports = function(R, _fantasy, buffer, Promise, logger) {
     var Maybe           = _fantasy.Maybe;
 
     var Future          = _fantasy.Future;
