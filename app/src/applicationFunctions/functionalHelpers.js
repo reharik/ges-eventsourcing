@@ -13,11 +13,17 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
 
     var boolToMaybe     = x => x ? Maybe(x) : Maybe.Nothing();
 
-    var getSafeValue = (prop, src, _default) => {
-        if(_default) {
-            return safeProp(prop,src).getOrElse(_default);
-        }
-        return safeProp(prop, src).getOrElse();
+    // var getSafeValue = (prop, src, _default) => {
+    //     if(_default) {
+    //         return safeProp(prop,src).getOrElse(_default);
+    //     }
+    //     return safeProp(prop, src).getOrElse();
+    // };
+
+    var getSafeValue = R.curry((prop, src) => safeProp(prop, src).getOrElse());
+
+    var futureToPromise = (future) => {
+        return new Promise((resolve, reject) => future.fork(reject, resolve))
     };
 
     var safeParseBuffer = x => buffer.Buffer.isBuffer(x) ? tryParseJSON(x.toString('utf8')) : Maybe.Nothing();
@@ -64,34 +70,34 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
     var logForkPlus = R.curry((y, x)  => {
         var fr, sr;
         x.fork(f=> {
-                console.log('==========log failure ' + y + '=========');
-                console.log(f);
-                console.log('==========ENDlog failure ' + y + '=========');
-                fr = f;
-            },
-                s=> {
-                console.log('==========log success ' + y + '=========');
-                console.log(s);
-                console.log('==========ENDlog success ' + y + '=========');
-                sr = s;
-            });
+              console.log('==========log failure ' + y + '=========');
+              console.log(f);
+              console.log('==========ENDlog failure ' + y + '=========');
+              fr = f;
+          },
+          s=> {
+              console.log('==========log success ' + y + '=========');
+              console.log(s);
+              console.log('==========ENDlog success ' + y + '=========');
+              sr = s;
+          });
 
         return sr ? Future((rej, res)=> res(sr)) : Future((rej, res)=> rej(fr));
     });
     var logFork     = x  => {
         var fr, sr;
         x.fork(f=> {
-                console.log('==========log failure=========');
-                console.log(f);
-                console.log('==========ENDlog failure=========');
-                fr = f;
-            },
-                s=> {
-                console.log('==========log success=========');
-                console.log(s);
-                console.log('==========ENDlog success=========');
-                sr = s;
-            });
+              console.log('==========log failure=========');
+              console.log(f);
+              console.log('==========ENDlog failure=========');
+              fr = f;
+          },
+          s=> {
+              console.log('==========log success=========');
+              console.log(s);
+              console.log('==========ENDlog success=========');
+              sr = s;
+          });
 
         return sr ? Future((rej, res)=> res(sr)) : Future((rej, res)=> rej(fr));
     };
@@ -117,6 +123,7 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
         logPlus,
         logFork,
         logForkPlus,
-        loggerTap
+        loggerTap,
+        futureToPromise
     }
 };

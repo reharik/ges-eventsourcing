@@ -51,7 +51,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
         var query = function(query) {
             logger.debug(query);
             // need to return proper element.  rows is an array of objects with id and document
-            var handlerResult =  fh.safeProp('rows');
+            var handlerResult =  R.compose(R.map(fh.getSafeValue('document')), fh.getSafeValue('rows' ));
             return pgFuture(query, handlerResult);
         };
 
