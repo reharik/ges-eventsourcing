@@ -5,9 +5,11 @@
 module.exports = function(R, _fantasy, buffer, Promise, logger) {
     var Maybe           = _fantasy.Maybe;
 
-    var Future          = _fantasy.Future.prototype.then = function(res,rej){
+    _fantasy.Future.prototype.then = function(res,rej){
         return this.fork(e => res(e), r => { res(r)})
     };
+
+    var Future          = _fantasy.Future;
 
     var safeProp        = R.curry((x, o) => o ? Maybe(o[x]) : Maybe.Nothing());
 
