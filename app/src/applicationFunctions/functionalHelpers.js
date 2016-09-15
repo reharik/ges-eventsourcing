@@ -5,7 +5,9 @@
 module.exports = function(R, _fantasy, buffer, Promise, logger) {
     var Maybe           = _fantasy.Maybe;
 
-    var Future          = _fantasy.Future;
+    var Future          = _fantasy.Future.prototype.then = function(res,rej){
+        return this.fork(e => res(e), r => { res(r)})
+    };
 
     var safeProp        = R.curry((x, o) => o ? Maybe(o[x]) : Maybe.Nothing());
 
@@ -51,6 +53,8 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
         }
     };
 
+    var Future = 
+    
     var executeFutureToPromise = f => f.fork(reject => {return new Promise.reject(reject.value())}, resolve => {return Pomise.resolve(resolve.value())});
 
     var isTrue = R.compose(R.map(R.lift(R.equals(true))));
@@ -124,6 +128,7 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
         logFork,
         logForkPlus,
         loggerTap,
-        futureToPromise
+        futureToPromise,
+        Future
     }
 };

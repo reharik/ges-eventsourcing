@@ -8,7 +8,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
     return function(_options) {
         var options = _options && _options.postgres ? _options.postgres : {};
         var fh      = appfuncs.functionalHelpers;
-        var Future  = _fantasy.Future;
+        var Future  = fh.Future;
         var pgFuture = function(query, handleResult) {
             return Future((rej, ret) => {
                 var pgClient = new pg.Client(options.connectionString + options.database);
