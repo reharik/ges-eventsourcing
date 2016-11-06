@@ -65,7 +65,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
             var handleRowIfPresent = R.compose(curriedGreater, R.chain(fh.safeProp('commitPosition')), R.map(takeFirst), fh.safeProp('rows'));
             var handlerResult = x =>
                 mGreater(fh.safeProp('rowCount', x), R.of(0))[0]
-                    ? fh.loggerTap({isIdempotent: handleRowIfPresent(x).getOrElse(false)},'info')
+                    ? fh.loggerTap({isIdempotent: fh.loggerTap(handleRowIfPresent(x).getOrElse(false))},'info')
                     : fh.loggerTap({isIdempotent: true},'info');
 
             return pgFuture(query, handlerResult);
