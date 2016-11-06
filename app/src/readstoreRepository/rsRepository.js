@@ -68,7 +68,7 @@ module.exports = function(pgasync, pg, config, R, _fantasy, appfuncs, uuid, logg
 
             var idempotent = row && row.document && row.document.CommitPosition >= originalPosition.CommitPosition;
             let result = {isIdempotent: idempotent};
-            logger.debuger(result);
+            logger.debug(result);
             return result;
         };
 
