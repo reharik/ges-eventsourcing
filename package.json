@@ -33,6 +33,7 @@
     "invariant": "^2.1.0",
     "is-object-empty": "^1.0.0",
     "pg": "^4.4.3",
+    "pg-async": "^2.4.0",
     "pg-bluebird": "^1.0.8",
     "ramda": "^0.22.1",
     "ramda-fantasy": "^0.6.1",
