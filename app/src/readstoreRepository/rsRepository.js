@@ -3,7 +3,7 @@
  */
 
 
-module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
+module.exports = function(pgasync, pg, config, R, _fantasy, appfuncs, uuid, logger) {
 
     return function(_options) {
         var options = _options && _options.postgres ? _options.postgres : {};
@@ -55,20 +55,21 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
             return pgFuture(query, handlerResult);
         };
 
-        var checkIdempotency = function(originalPosition, eventHandlerName) {
+        var checkIdempotency = async function(originalPosition, eventHandlerName) {
+            const pg = new pgasync.default(options.config);
+            var query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
 
-            var query              = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
             logger.debug(query);
-            var mGreater           = R.lift(R.gt);
-            var curriedGreater     = mGreater(fh.safeProp(originalPosition, 'CommitPosition'));
-            var takeFirst          = x => x[0];
-            var handleRowIfPresent = R.compose(curriedGreater, R.chain(fh.safeProp('commitPosition')), R.map(takeFirst), fh.safeProp('rows'));
-            var handlerResult = x =>
-                mGreater(fh.safeProp('rowCount', x), R.of(0))[0]
-                    ? fh.loggerTap({isIdempotent: fh.loggerTap(handleRowIfPresent(x).getOrElse(false))},'info')
-                    : fh.loggerTap({isIdempotent: true},'info');
 
-            return pgFuture(query, handlerResult);
+            const row = await pg.rows(query)[0];
+
+            logger.debug(`event commit possition ${originalPosition.CommitPosition}`);
+            logger.debug(`db commit possition ${row && row.document && row.document.CommitPosition ? row.document.CommitPosition : 'no record'}`);
+
+            var idempotent = row && row.document && row.document.CommitPosition >= originalPosition.CommitPosition;
+            let result = {isIdempotent: idempotent};
+            logger.debuger(result);
+            return result;
         };
 
         var recordEventProcessed = function(originalPosition, eventHandlerName) {
