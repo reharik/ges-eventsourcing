@@ -64,14 +64,14 @@ module.exports = function(rsRepository,
                 eventName     : 'notification',
                 streamType    : 'notification'
             };
-            notification = {
+            var _notification = {
                 eventName: 'notification',
                 data,
                 metadata
             };
             return {
                 expectedVersion: -2,
-                events         : [ef.outGoingEvent(notification)]
+                events         : [ef.outGoingEvent(_notification)]
             }
         });
 
