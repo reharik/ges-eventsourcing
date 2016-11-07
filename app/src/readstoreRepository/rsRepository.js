@@ -55,17 +55,17 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
             return pgFuture(query, handlerResult);
         };
 
-        var checkIdempotency = async function(originalPosition, eventHandlerName) {
+        var checkIdempotency = function(originalPosition, eventHandlerName) {
             var query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
             logger.debug(query);
 
-            var handleResult = rows => {
-                const row = rows[0];
+            var handleResult = x => {
+                const row = x.rows[0];
 
                 logger.debug(`event commit possition ${originalPosition.CommitPosition}`);
-                logger.debug(`db commit possition ${row && row.document && row.document.CommitPosition ? row.document.CommitPosition : 'no record'}`);
+                logger.debug(`db commit possition ${row && row.commitPosition ? row.commitPosition : 'no record'}`);
 
-                var idempotent = row && row.document && row.document.CommitPosition >= originalPosition.CommitPosition;
+                var idempotent = row && row.commitPosition >= originalPosition.CommitPosition;
                 var result = {isIdempotent: idempotent};
                 logger.debug(result);
                 return result;
