@@ -61,11 +61,11 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
 
             var handleResult = x => {
                 const row = x.rows[0];
-
+                const rowPosition = row && row.commitPosition ? row.commitPosition : 0
                 logger.debug(`event commit possition ${originalPosition.CommitPosition}`);
-                logger.debug(`db commit possition ${row && row.commitPosition ? row.commitPosition : 'no record'}`);
+                logger.debug(`db commit possition ${rowPosition}`);
 
-                var idempotent = row && row.commitPosition >= originalPosition.CommitPosition;
+                var idempotent = originalPosition.CommitPosition > rowPosition;
                 var result = {isIdempotent: idempotent};
                 logger.debug(result);
                 return result;
