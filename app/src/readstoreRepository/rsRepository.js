@@ -30,7 +30,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
         };
 
         var getById = function(id, table) {
-            var query         = ('SELECT * from "' + table + '" where "Id" = \'' + id + '\'');
+            var query         = ('SELECT * from "' + table + '" where "id" = \'' + id + '\'');
             logger.debug(query);
             var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
             return pgFuture(query, handlerResult);
@@ -39,7 +39,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
         var save = function(table, document, id) {
             var query;
             if (id) {
-                query = 'UPDATE "' + table + '" SET document = \'' + JSON.stringify(document) + '\' where Id = \'' + id + '\'';
+                query = 'UPDATE "' + table + '" SET document = \'' + JSON.stringify(document) + '\' where id = \'' + id + '\'';
             } else {
                 query = 'INSERT INTO "' + table + '" ("id", "document") VALUES (\'' + document.id + '\',\'' + JSON.stringify(document) + '\')';
             }
