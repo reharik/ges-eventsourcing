@@ -32,7 +32,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
         var getById = function(id, table) {
             var query         = ('SELECT * from "' + table + '" where "id" = \'' + id + '\'');
             logger.debug(query);
-            var handleResult = x => {
+            var handlerResult = x => {
                 const row = x.rows[0];
                 return row && row.document ? row.document : {}
             }
