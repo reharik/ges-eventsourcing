@@ -97,6 +97,9 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
                 };
 
                 // add extra data to metadata portion of persisted event
+                console.log('==========_metadata=========');
+                console.log(_metadata);
+                console.log('==========END _metadata=========');
                 var metadata = extend(metadata, _metadata);
                 streamName = aggregate.constructor.name + aggregate._id;
                 newEvents  = aggregate.getUncommittedEvents();
