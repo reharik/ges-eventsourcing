@@ -16,11 +16,11 @@ module.exports = function(coqueue, eventHandlerWorkflow, logger, co, JSON) {
                     logger.trace('message for ' + this.handlerName + ' isIdempotent ' + isIdempotent);
 
                     if(isIdempotent === true){
-                        this.handlerReturn(yield this.workflow.wrapHandlerFunction(value.event,value.handlerFunction));
+                        let result = this.handlerReturn(yield this.workflow.wrapHandlerFunction(value.event,value.handlerFunction));
                         logger.trace('message for ' + this.handlerName + ' was handled ' + value.event.eventName);
                         this.handlerReturn(yield this.workflow.recordEventProcessed(value.event, this.handlerName));
                         logger.trace('message for ' + this.handlerName + ' recorded as processed ' + value.event.eventName);
-                        this.handlerReturn(yield this.workflow.dispatchSuccess(value.event, 'event processed successfully'));
+                        this.handlerReturn(yield this.workflow.dispatchSuccess(value.event, 'event processed successfully', result.id));
                         logger.trace('message for ' + this.handlerName + ' notification disaptched');
                     }
                 }

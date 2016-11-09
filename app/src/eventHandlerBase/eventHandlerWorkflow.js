@@ -53,10 +53,11 @@ module.exports = function(rsRepository,
         var recordEventProcessed = (event,hName) =>  rsRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), hName);
 
         //notification  string -> string -> Future<string|JSON>
-        var notification = R.curry((e,y,x) => {
+        var notification = R.curry((e,y,x,z) => {
             var data     = {
                 result      : y,
                 message     : x,
+                returnId    : z,
                 initialEvent: e
             };
             var metadata = {
@@ -79,7 +80,7 @@ module.exports = function(rsRepository,
         var append = R.curry((x) => eventstore.appendToStreamPromise('notification',x));
 
         //dispatchSuccess  JSON -> Future<string|JSON>
-        var dispatchSuccess = (event,message) => append(notification(event,'Success', message));
+        var dispatchSuccess = (event,message, returnId) => append(notification(event,'Success', message, returnId));
 
         //dispatchFailure  JSON -> Future<string|JSON>
         var dispatchFailure = (event,message) => append(notification(event,'Failure', message));
