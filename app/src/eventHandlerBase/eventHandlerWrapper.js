@@ -2,7 +2,7 @@
 
 module.exports = function(logger) {
 
-  return async function({hName, hFunc, event}) {
+  return async function(hName, hFunc, event) {
     try {
       logger.trace(this.handlerName + ' ' + JSON.stringify(event));
       const isIdempotent = await rsRepository.checkIdempotency(fh.getSafeValue('originalPosition', event), hName);

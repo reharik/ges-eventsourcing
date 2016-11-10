@@ -16,11 +16,16 @@ var eventDispatcher = function eventDispatcher(eventstore,
 
                 var mAndF  = mapAndFilterStream(streamType);
                 var _s     = serveToHandlers(_handlers);
+                var subject = new rx.Subject();
+                
                 var stream = rx.Observable.fromEvent(eventstore.subscribeToAllFrom(), 'event')
                     .filter(mAndF.isValidStreamType)
-                    .map(mAndF.transformEvent);
-
-                stream.subscribe(_s.serveEventToHandlers);
+                    .map(mAndF.transformEvent)
+                  .subscribe(subject);
+                
+                return subject;
+                
+                // stream.subscribe(_s.serveEventToHandlers);
             }
         }
     };
