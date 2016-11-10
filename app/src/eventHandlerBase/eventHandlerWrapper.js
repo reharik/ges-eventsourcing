@@ -4,21 +4,21 @@ module.exports = function(logger) {
 
   return async function({hName, hFunc, event}) {
     try {
-      logger.trace(this.handlerName + ' ' + JSON.stringify(value.event));
+      logger.trace(this.handlerName + ' ' + JSON.stringify(event));
       const isIdempotent = await rsRepository.checkIdempotency(fh.getSafeValue('originalPosition', event), hName);
       logger.trace('message for ' + this.handlerName + ' isIdempotent ' + isIdempotent);
       if(!isIdempotent){
         throw new Error("item has already been processed");
       }
 
-      var continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', e));
-      var handlerResult = await = hFunc(fh.getSafeValue('data', e), continuationId);
-      logger.trace('message for ' + this.handlerName + ' was handled ' + value.event.eventName);
+      var continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
+      var handlerResult = await hFunc(fh.getSafeValue('data', event), continuationId);
+      logger.trace('message for ' + this.handlerName + ' was handled ' + event.eventName);
 
       await rsRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), hName);
-      logger.trace('message for ' + this.handlerName + ' recorded as processed ' + value.event.eventName);
+      logger.trace('message for ' + this.handlerName + ' recorded as processed ' + event.eventName);
 
-      await dispatchNotification("Success", e, handlerResult);
+      await dispatchNotification("Success", event, handlerResult);
       logger.trace('message for ' + this.handlerName + ' notification disaptched');
 
     } catch(ex) {
