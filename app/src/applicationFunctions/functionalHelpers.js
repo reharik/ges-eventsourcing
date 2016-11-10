@@ -132,7 +132,7 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
         logFork,
         logForkPlus,
         loggerTap,
-        futureToPromise,
+        // futureToPromise,
         Future
     }
 };

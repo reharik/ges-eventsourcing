@@ -12,7 +12,7 @@ module.exports = function(logger) {
       }
 
       var continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', e));
-      var handlerResult await hFunc(fh.getSafeValue('data', e), continuationId);
+      var handlerResult await = hFunc(fh.getSafeValue('data', e), continuationId);
       logger.trace('message for ' + this.handlerName + ' was handled ' + value.event.eventName);
 
       await rsRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), hName);
@@ -35,8 +35,8 @@ module.exports = function(logger) {
       var notification = () => {
         var data = {
           result: success,
-          initialEvent: e
-          handlerResult,
+          initialEvent: e,
+          handlerResult
         };
         var metadata = {
           continuationId: e.continuationId || null,
