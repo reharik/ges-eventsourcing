@@ -12,7 +12,7 @@ module.exports = function(logger) {
       }
 
       var continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', e));
-      var handlerResult await = hFunc(fh.getSafeValue('data', e), continuationId);
+      var handlerResult = await = hFunc(fh.getSafeValue('data', e), continuationId);
       logger.trace('message for ' + this.handlerName + ' was handled ' + value.event.eventName);
 
       await rsRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), hName);
@@ -22,7 +22,7 @@ module.exports = function(logger) {
       logger.trace('message for ' + this.handlerName + ' notification disaptched');
 
     } catch(ex) {
-      dispatchNotification("Failure", e, ex)
+      dispatchNotification("Failure", event, ex)
     }
 
 //TODO pull this out then remove the try catch here and catch in handler above if I still have it that way
