@@ -11,6 +11,10 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
 
     var Future          = _fantasy.Future;
 
+    Future.prototype.then = function(res,rej){
+        return this.fork(e => res(e), r => { res(r)})
+    };
+
     var safeProp        = R.curry((x, o) => o ? Maybe(o[x]) : Maybe.Nothing());
 
     var startsWith      = R.curry((x, s) => s.startsWith(x));
@@ -26,9 +30,9 @@ module.exports = function(R, _fantasy, buffer, Promise, logger) {
 
     var getSafeValue = R.curry((prop, src) => safeProp(prop, src).getOrElse());
 
-    var futureToPromise = (future) => {
-        return new Promise((resolve, reject) => future.fork(reject, resolve))
-    };
+    // var futureToPromise = (future) => {
+    //     return new Promise((resolve, reject) => future.fork(reject, resolve))
+    // };
 
     var safeParseBuffer = x => buffer.Buffer.isBuffer(x) ? tryParseJSON(x.toString('utf8')) : Maybe.Nothing();
 
