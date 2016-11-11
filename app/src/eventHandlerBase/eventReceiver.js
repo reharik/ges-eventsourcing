@@ -1,10 +1,10 @@
-module.exports = function (eventHandlerWrapper, logger) {
+module.exports = function (eventWorkflow, logger) {
 
     return function (source, handler) {
         source.subscribe(async function (x) {
             const func = handler[x.eventName];
             if (func) {
-                await eventHandlerWrapper(handler.handlerName, func, x);
+                await eventWorkflow(handler.handlerName, func, x);
             }
         })
     }
