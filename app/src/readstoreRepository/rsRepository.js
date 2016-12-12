@@ -14,7 +14,7 @@ module.exports = function(pg, R, _fantasy, appfuncs, uuid, logger) {
                 var pgClient = new pg.Client(options.connectionString + options.database);
                 pgClient.connect(cErr => {
                     if (cErr) {
-                        return rej(fh.loggerTap(cErr),'debug');
+                        throw new Error('Error connecting to postgres', cErr);
                     }
                     pgClient.query(query, (err, result) => {
                         if (err) {
