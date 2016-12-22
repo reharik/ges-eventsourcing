@@ -26,7 +26,7 @@ module.exports = function(dispatchNotification,
 
     } catch (ex) {
       // here we need to determin if this is a catastrophic failure, and if so best to throw
-      await dispatchNotification("Failure", event, ex.message)
+      await dispatchNotification("Failure", event, ex)
     }
   }
 };
