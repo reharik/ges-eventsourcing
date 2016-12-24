@@ -25,6 +25,10 @@ module.exports = function(dispatchNotification,
       logger.trace('message for ' + handlerName + ' notification disaptched');
 
     } catch (ex) {
+      console.log('==========ex=========');
+      console.log(ex);
+      console.log('==========END ex=========');
+
       // here we need to determin if this is a catastrophic failure, and if so best to throw
       await dispatchNotification("Failure", event, ex)
     }

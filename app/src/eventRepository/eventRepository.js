@@ -28,6 +28,10 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
                     (aggregateType.isAggregateBase && aggregateType.isAggregateBase()),
                     "aggregateType must inherit from AggregateBase"
                 );
+                console.log('==========id=========');
+                console.log(id);
+                console.log('==========END id=========');
+                
                 invariant(
                     id && id.length === (36),
                     "id must be a valid uuid"
