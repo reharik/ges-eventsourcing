@@ -3,14 +3,20 @@
  */
 "use strict";
 
-module.exports = function appendToStreamPromise(gesConnection, logger, invariant, Promise, R, JSON) {
+module.exports = function appendToStreamPromise(gesConnection, logger, invariant, Promise, R, JSON, appfuncs) {
     return R.curry(function (streamName, data) {
+        var ef = appfuncs.eventFunctions;
+
         invariant(
             streamName,
             'must pass a valid stream name'
         );
+        console.log('==========data=========');
+        console.log(data);
+        console.log('==========END data=========');
+
         invariant(
-            data.expectedVersion,
+            data.expectedVersion != undefined,
             'must pass data with an expected version of aggregate'
         );
         invariant(
@@ -26,7 +32,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
                     logger.debug('rejecting appendToStream Promise with error message: ' + err);
                     reject(err);
                 } else {
-                    logger.debug('resolving appendToStream Promise with response: ' + JSON.stringify(result));
+                    logger.debug('resolving appendToStream Promise with response: ' + ef.parseData(result).getOrElse());
                     resolve(result);
                 }
             });

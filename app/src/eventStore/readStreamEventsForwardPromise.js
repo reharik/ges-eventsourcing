@@ -3,8 +3,10 @@
  */
 "use strict";
 
-module.exports = function(gesConnection, logger, invariant, Promise, JSON) {
+module.exports = function(gesConnection, logger, invariant, Promise, JSON, appfuncs) {
     return function (streamName, skipTake) {
+        var ef = appfuncs.eventFunctions;
+
         invariant(
             streamName,
             'must pass a valid stream name'
@@ -22,7 +24,8 @@ module.exports = function(gesConnection, logger, invariant, Promise, JSON) {
                     logger.error('rejecting readStreamEventsForward Promise with error message: ' + err);
                     reject(err);
                 } else {
-                    logger.debug('resolving readStreamEventsForward Promise with response: ' + JSON.stringify(results));
+                    logger.debug('resolving readStreamEventsForward Promise with response: ' + results);
+                    logger.debug('resolving readStreamEventsForward Promise with response: ' + ef.parseData(results).getOrElse());
                     resolve(results);
                 }
             });

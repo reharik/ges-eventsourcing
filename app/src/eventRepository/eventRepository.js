@@ -17,25 +17,25 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
             "repository requires a read size greater than 0"
         );
 
-        var getById = function(aggregateType, id, version = 0) {
+        var getById = async function(aggregateType, id, version = 0) {
             var streamName;
             var aggregate;
             var sliceStart = 0;
             var currentSlice;
             var sliceCount;
-            co(function*() {
+            try {
                 invariant(
-                    (aggregateType.isAggregateBase && aggregateType.isAggregateBase()),
-                    "aggregateType must inherit from AggregateBase"
+                  (aggregateType.isAggregateBase && aggregateType.isAggregateBase()),
+                  "aggregateType must inherit from AggregateBase"
                 );
 
                 invariant(
-                    id && id.length === (36),
-                    "id must be a valid uuid"
+                  id && id.length === (36),
+                  "id must be a valid uuid"
                 );
                 invariant(
-                    (version >= 0),
-                    "version number must be greater than or equal to 0"
+                  (version >= 0),
+                  "version number must be greater than or equal to 0"
                 );
 
                 streamName = aggregateType.aggregateName() + id;
@@ -47,7 +47,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
                     sliceCount = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
                     // get all events, or first batch of events from GES
 
-                    currentSlice = yield eventstore.readStreamEventsForwardPromise(streamName, {
+                    currentSlice = await eventstore.readStreamEventsForwardPromise(streamName, {
                         start: sliceStart,
                         count: sliceCount
                     });
@@ -66,11 +66,11 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
 
                 } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
                 return aggregate;
-            }.bind(this)).catch(function(err) {
+            } catch (err) {
                 console.log('==========err=========');
                 console.log(err);
                 console.log('==========ENDerr=========');
-            });
+            }
         };
 
         var save = function(aggregate, _metadata) {
@@ -107,6 +107,17 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
 
                 originalVersion = aggregate._version - newEvents.length;
                 expectedVersion = originalVersion == 0 ? -1 : originalVersion - 1;
+console.log('==========aggregagte._version=========');
+console.log(aggregate._version);
+console.log('==========END aggregagte._version=========');
+console.log('==========newEvents.length=========');
+console.log(newEvents.length);
+console.log('==========END newEvents.length=========');
+console.log('==========expectedVersion=========');
+console.log(expectedVersion);
+console.log('==========END expectedVersion=========');
+
+
 
                 events = newEvents.map(e=> { e.metadata = metadata; return ef.outGoingEvent(e) });
 
