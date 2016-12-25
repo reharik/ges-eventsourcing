@@ -24,8 +24,7 @@ module.exports = function(gesConnection, logger, invariant, Promise, JSON, appfu
                     logger.error('rejecting readStreamEventsForward Promise with error message: ' + err);
                     reject(err);
                 } else {
-                    logger.debug('resolving readStreamEventsForward Promise with response: ' + results);
-                    logger.debug('resolving readStreamEventsForward Promise with response: ' + ef.parseData(results).getOrElse());
+                    logger.debug(`resolving readStreamEventsForward Promise with ${results.length} events`);
                     resolve(results);
                 }
             });

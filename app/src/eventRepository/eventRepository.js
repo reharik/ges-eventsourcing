@@ -61,6 +61,9 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                     }
 
                     sliceStart = currentSlice.NextEventNumber;
+console.log('==========currentSlice.Events=========');
+console.log(currentSlice.Events);
+console.log('==========END currentSlice.Events=========');
 
                     currentSlice.Events.forEach(e => aggregate.applyEvent(ef.incomingEvent(e)));
 
@@ -102,11 +105,14 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                 console.log(_metadata);
                 console.log('==========END _metadata=========');
                 metadata = extend(metadata, _metadata);
-                streamName = aggregate.constructor.name + aggregate._id;
+                streamName = aggregate.type + aggregate._id;
                 newEvents  = aggregate.getUncommittedEvents();
+console.log('==========streamName=========');
+console.log(streamName);
+console.log('==========END streamName=========');
 
                 originalVersion = aggregate._version - newEvents.length;
-                expectedVersion = originalVersion == 0 ? -1 : originalVersion - 1;
+                // expectedVersion = originalVersion == 0 ? -1 : originalVersion -1;
 console.log('==========aggregagte._version=========');
 console.log(aggregate._version);
 console.log('==========END aggregagte._version=========');
@@ -114,15 +120,13 @@ console.log('==========newEvents.length=========');
 console.log(newEvents.length);
 console.log('==========END newEvents.length=========');
 console.log('==========expectedVersion=========');
-console.log(expectedVersion);
+console.log(originalVersion);
 console.log('==========END expectedVersion=========');
-
-
 
                 events = newEvents.map(e=> { e.metadata = metadata; return ef.outGoingEvent(e) });
 
                 appendData = {
-                    expectedVersion: expectedVersion,
+                        expectedVersion: originalVersion,
                     events         : events
                 };
                 result     = await eventstore.appendToStreamPromise(streamName, appendData);
