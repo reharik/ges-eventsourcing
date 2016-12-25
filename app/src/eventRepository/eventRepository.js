@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,co ) {
+module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend ) {
     return function(_options) {
         var ef      = appfuncs.eventFunctions;
         var options = {
@@ -73,7 +73,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
             }
         };
 
-        var save = function(aggregate, _metadata) {
+        var save = async function(aggregate, _metadata) {
             var streamName;
             var newEvents;
             var metadata;
@@ -82,7 +82,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
             var events;
             var appendData;
             var result;
-            co(function*() {
+            try {
                 invariant(
                     (aggregate.isAggregateBase && aggregate.isAggregateBase()),
                     "aggregateType must inherit from AggregateBase"
@@ -101,7 +101,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
                 console.log('==========_metadata=========');
                 console.log(_metadata);
                 console.log('==========END _metadata=========');
-                var metadata = extend(metadata, _metadata);
+                metadata = extend(metadata, _metadata);
                 streamName = aggregate.constructor.name + aggregate._id;
                 newEvents  = aggregate.getUncommittedEvents();
 
@@ -125,14 +125,14 @@ console.log('==========END expectedVersion=========');
                     expectedVersion: expectedVersion,
                     events         : events
                 };
-                result     = yield eventstore.appendToStreamPromise(streamName, appendData);
+                result     = await eventstore.appendToStreamPromise(streamName, appendData);
 
                 aggregate.clearUncommittedEvents();
-            }.bind(this)).catch(function(err) {
+            } catch(err) {
                 console.log('==========err=========');
                 console.log(err);
                 console.log('==========ENDerr=========');
-            });
+            };
             //largely for testing purposes
             return appendData;
         };
