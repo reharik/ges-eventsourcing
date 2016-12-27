@@ -14,8 +14,12 @@ module.exports = function(R, uuid, functionalHelpers){
     };
 
     var incomingEvent = event => {
+        console.log('==========event=========');
+        console.log(event);
+        console.log('==========END event=========');
+
         return {
-            eventName : fh.safeProp('eventType',event).getOrElse(''),
+            eventName : R.compose(R.map(fh.safeProp('EventType')), fh.safeProp('Event',event)).getOrElse(''),
             metadata: parseMetadata(event).getOrElse({}),
             data: parseData(event).getOrElse({}),
             originalPosition: fh.safeProp('OriginalPosition', event).getOrElse({})

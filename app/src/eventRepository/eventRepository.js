@@ -65,7 +65,16 @@ console.log('==========currentSlice.Events=========');
 console.log(currentSlice.Events);
 console.log('==========END currentSlice.Events=========');
 
-                    currentSlice.Events.forEach(e => aggregate.applyEvent(ef.incomingEvent(e)));
+                    currentSlice.Events.forEach(e => {
+                        console.log('==========e=========');
+                        console.log(e);
+                        console.log('==========END e=========');
+                        console.log('==========ef.incomingEvent(e)=========');
+                        console.log(ef.incomingEvent(e));
+                        console.log('==========END ef.incomingEvent(e)=========');
+
+                        aggregate.applyEvent(ef.incomingEvent(e))
+                    });
 
                 } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
                 return aggregate;
