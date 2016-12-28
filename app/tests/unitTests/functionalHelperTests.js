@@ -9,7 +9,7 @@ var _fantasy = require('ramda-fantasy');
 var Maybe = _fantasy.Maybe;
 var buffer = require('buffer');
 var logger = require('corelogger');
-var mut = require('../../src/functionalHelpers')(R, _fantasy, buffer,logger);
+var mut = require('../../src/applicationFunctions/functionalHelpers')(R, _fantasy, buffer,logger);
 
 var noEventTypeEvent = {};
 
@@ -54,13 +54,13 @@ describe('FUNCTIONAL HELPERS', function() {
     context('when calling parseBuffer on a buffer', function() {
         it('should return a maybe of the parsed data', function() {
             var buffer = new Buffer(JSON.stringify(noMetadataEvent), 'utf8');
-            mut.parseBuffer(buffer).must.eql(Maybe.of(noMetadataEvent));
+            mut.safeParseBuffer(buffer).must.eql(Maybe.of(noMetadataEvent));
         })
     });
 
     context('when calling parseBuffer on a string', function() {
         it('should return a maybe Nothing', function() {
-            mut.parseBuffer(noMetadataEvent).must.eql(Maybe.Nothing());
+            mut.safeParseBuffer(noMetadataEvent).must.eql(Maybe.Nothing());
         })
     });
 
