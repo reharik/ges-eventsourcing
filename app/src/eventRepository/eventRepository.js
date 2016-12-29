@@ -60,6 +60,10 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                 throw new Error('Aggregate Deleted: ' + streamName);
               }
 
+              console.log('==========currentSlice.Events=========');
+              console.log(currentSlice.Events);
+              console.log('==========END currentSlice.Events=========');
+
               sliceStart = currentSlice.NextEventNumber;
               currentSlice.Events.forEach(e => {
                 aggregate.applyEvent(ef.incomingEvent(e))
@@ -105,7 +109,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             metadata = extend(metadata, _metadata);
             streamName = aggregate.type + aggregate._id;
             newEvents = aggregate.getUncommittedEvents();
-            originalVersion = aggregate._version - newEvents.length;  
+            originalVersion = aggregate._version - newEvents.length;
             console.log('==========aggregate._version=========');
             console.log(aggregate._version);
             console.log('==========END aggregate._version=========');
