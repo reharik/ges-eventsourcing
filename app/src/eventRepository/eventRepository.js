@@ -7,7 +7,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
     return function(_options) {
         var ef      = appfuncs.eventFunctions;
         var options = {
-            readPageSize: 1,
+            readPageSize: 500,
             streamType  : 'event'
         };
         extend(options, _options || {});
@@ -41,15 +41,23 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             streamName = aggregateType.aggregateName() + id;
             // this might be problematic
             aggregate = new aggregateType();
+
+
+            // for (let i = 0; i < docs.length; i++) {
+            //   let doc = docs[i];
+            //   await db.post(doc);
+            // }
+
+
             do {
               // specify number of events to pull. if number of events too large for one call use limit
 
-              sliceCount = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
+              // sliceCount = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
               // get all events, or first batch of events from GES
 
               currentSlice = await eventstore.readStreamEventsForwardPromise(streamName, {
                 start: sliceStart,
-                count: sliceCount
+                count: options.readPageSize
               });
               //validate
               if (currentSlice.Status == 'StreamNotFound') {
