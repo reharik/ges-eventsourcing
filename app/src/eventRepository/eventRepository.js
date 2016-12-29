@@ -66,6 +66,10 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
               });
 
             } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
+            console.log('==========aggregate=========');
+            console.log(aggregate);
+            console.log('==========END aggregate=========');
+
             return aggregate;
           } catch (err) {
             console.log('==========err=========');
@@ -101,7 +105,15 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             metadata = extend(metadata, _metadata);
             streamName = aggregate.type + aggregate._id;
             newEvents = aggregate.getUncommittedEvents();
-            originalVersion = aggregate._version - newEvents.length;
+            originalVersion = aggregate._version - newEvents.length;  
+            console.log('==========aggregate._version=========');
+            console.log(aggregate._version);
+            console.log('==========END aggregate._version=========');
+
+            console.log('==========originalVersion=========');
+            console.log(originalVersion);
+            console.log('==========END originalVersion=========');
+
             events = newEvents.map(e=> {
               e.metadata = metadata;
               return ef.outGoingEvent(e)
