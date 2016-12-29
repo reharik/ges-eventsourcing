@@ -77,7 +77,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                 aggregate.applyEvent(ef.incomingEvent(e))
               });
 
-            } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
+            } while (!currentSlice.IsEndOfStream);
             console.log('==========aggregate=========');
             console.log(aggregate);
             console.log('==========END aggregate=========');
