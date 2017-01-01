@@ -17,7 +17,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             "repository requires a read size greater than 0"
         );
 
-        var getById = async function(aggregateType, id, version = 0) {
+        var getById = async function(aggregateType, id) {
           var streamName;
           var aggregate;
           var sliceStart = 0;
@@ -33,10 +33,10 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
               id && id.length === (36),
               "id must be a valid uuid"
             );
-            invariant(
-              (version >= 0),
-              "version number must be greater than or equal to 0"
-            );
+            // invariant(
+            //   (version >= 0),
+            //   "version number must be greater than or equal to 0"
+            // );
 
             streamName = aggregateType.aggregateName() + id;
             // this might be problematic
