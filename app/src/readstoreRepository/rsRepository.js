@@ -3,7 +3,7 @@
  */
 
 
-module.exports = function(R, _fantasy, appfuncs, uuid, logger, repositoryHelper) {
+module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
     return {
         getById: function(id, table) {
             var query         = ('SELECT * from "' + table + '" where "id" = \'' + id + '\'');
@@ -14,7 +14,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, repositoryHelper)
             };
 
             // var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
-            return repositoryHelper.pgFuture(query, handlerResult);
+            return pgFuture(query, handlerResult);
         },
 
         save: function(table, document, id) {
@@ -26,14 +26,14 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, repositoryHelper)
             }
             logger.debug(query);
             var handlerResult = r=>_fantasy.Maybe.of(r);
-            return repositoryHelper.pgFuture(query, handlerResult);
+            return pgFuture(query, handlerResult);
         },
 
         saveQuery: function(query) {
             logger.debug(query);
 
             var handlerResult = r=>_fantasy.Maybe.of(r);
-            return repositoryHelper.pgFuture(query, handlerResult);
+            return pgFuture(query, handlerResult);
         },
 
         query: function(query) {
@@ -42,7 +42,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, repositoryHelper)
             
             // need to return proper element.  rows is an array of objects with id and document
             var handlerResult =  R.compose(R.map(fh.getSafeValue('document')), fh.getSafeValue('rows' ));
-            return repositoryHelper.pgFuture(query, handlerResult);
+            return pgFuture(query, handlerResult);
         }
     }
 };

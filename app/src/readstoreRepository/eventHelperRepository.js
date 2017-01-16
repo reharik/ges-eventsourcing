@@ -1,4 +1,4 @@
-module.exports = function(R, _fantasy, appfuncs, uuid, logger, repositoryHelper) {
+module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
 
     return {
         checkIdempotency: function(originalPosition, eventHandlerName) {
@@ -16,7 +16,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, repositoryHelper)
                 logger.debug(result);
                 return result;
             };
-            return repositoryHelper.pgFuture(query, handleResult);
+            return pgFuture(query, handleResult);
         },
 
         recordEventProcessed: function(originalPosition, eventHandlerName) {
@@ -36,7 +36,7 @@ WHERE NOT EXISTS ( SELECT 1 from "lastProcessedPosition" where "handlerType" = '
             logger.debug(query);
 
             var handlerResult = r=>_fantasy.Maybe.of(r);
-            return repositoryHelper.pgFuture(query, handlerResult);
+            return pgFuture(query, handlerResult);
         }
     }
 };
