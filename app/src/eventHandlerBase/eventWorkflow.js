@@ -8,7 +8,7 @@ module.exports = function(dispatchNotification,
     var fh      = appfuncs.functionalHelpers;
     try {
       logger.trace(handlerName + ' ' + JSON.stringify(event));
-      const isIdempotent = await rsRepository.checkIdempotency(fh.getSafeValue('originalPosition', event), handlerName);
+      const isIdempotent = await eventHelperRepository.checkIdempotency(fh.getSafeValue('originalPosition', event), handlerName);
       logger.trace('message for ' + handlerName + ' isIdempotent ' + JSON.stringify(isIdempotent));
       if (!isIdempotent.isIdempotent) {
         throw new Error("item has already been processed");
@@ -18,7 +18,7 @@ module.exports = function(dispatchNotification,
       var handlerResult = await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
       logger.trace('message for ' + handlerName + ' was handled ' + event.eventName);
 
-      await rsRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), handlerName);
+      await eventHelperRepository.recordEventProcessed(fh.getSafeValue('originalPosition', event), handlerName);
       logger.trace('message for ' + handlerName + ' recorded as processed ' + event.eventName);
 
       await dispatchNotification("Success", event, handlerResult);
