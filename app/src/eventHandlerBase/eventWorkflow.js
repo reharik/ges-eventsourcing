@@ -10,7 +10,7 @@ module.exports = function(dispatchNotification,
       logger.trace(handlerName + ' ' + JSON.stringify(event));
       const isIdempotent = await rsRepository.checkIdempotency(fh.getSafeValue('originalPosition', event), handlerName);
       logger.trace('message for ' + handlerName + ' isIdempotent ' + JSON.stringify(isIdempotent));
-      if (!isIdempotent) {
+      if (!isIdempotent.isIdempotent) {
         throw new Error("item has already been processed");
       }
 
