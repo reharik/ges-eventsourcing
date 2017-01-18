@@ -16,10 +16,15 @@ console.log('==========originalPosition.CommitPosition=========');
 console.log('==========END originalPosition.CommitPosition=========');
                 console.log('==========rowPosition=========');
                 console.log(rowPosition);
+                console.log(typeof rowPosition);
                 console.log('==========END rowPosition=========');
 console.log('==========originalPosition.CommitPosition > rowPosition=========');
 console.log(originalPosition.CommitPosition > rowPosition);
 console.log('==========END originalPosition.CommitPosition > rowPosition=========');
+                console.log('==========parseInt(originalPosition.CommitPosition) > rowPosition=========');
+                console.log(parseInt(originalPosition.CommitPosition) > rowPosition);
+                console.log('==========END parseInt(originalPosition.CommitPosition) > rowPosition=========');
+                
                 var idempotent = originalPosition.CommitPosition > rowPosition;
                 var result = {isIdempotent: idempotent};
                 logger.debug(result);
