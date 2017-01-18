@@ -10,7 +10,16 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
                 const rowPosition = row && row.commitPosition ? row.commitPosition : 0;
                 logger.debug(`event commit possition ${originalPosition.CommitPosition}`);
                 logger.debug(`db commit possition ${rowPosition}`);
-
+console.log('==========originalPosition.CommitPosition=========');
+                console.log(originalPosition.CommitPosition);
+                console.log(typeof originalPosition.CommitPosition);
+console.log('==========END originalPosition.CommitPosition=========');
+                console.log('==========rowPosition=========');
+                console.log(rowPosition);
+                console.log('==========END rowPosition=========');
+console.log('==========originalPosition.CommitPosition > rowPosition=========');
+console.log(originalPosition.CommitPosition > rowPosition);
+console.log('==========END originalPosition.CommitPosition > rowPosition=========');
                 var idempotent = originalPosition.CommitPosition > rowPosition;
                 var result = {isIdempotent: idempotent};
                 logger.debug(result);
