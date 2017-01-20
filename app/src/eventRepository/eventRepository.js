@@ -36,9 +36,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             // );
 
             streamName = aggregateType.aggregateName() + id;
-            console.log(`==========getById streamName=========`);
-            console.log(streamName);
-            console.log(`==========END streamName=========`);
+            logger.debug(`Getting Aggregate by id with streamname: ${streamName}`);
             // this might be problematic
             aggregate = new aggregateType();
 
@@ -68,9 +66,8 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                 throw new Error('Aggregate Deleted: ' + streamName);
               }
 
-              console.log('==========currentSlice.Events=========');
-              console.log(currentSlice.Events);
-              console.log('==========END currentSlice.Events=========');
+              logger.trace(`events returned in current slice`);
+              logger.trace(currentSlice.Events);
 
               sliceStart = currentSlice.NextEventNumber;
               currentSlice.Events.forEach(e => {
@@ -78,15 +75,13 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
               });
 
             } while (!currentSlice.IsEndOfStream);
-            console.log('==========aggregate=========');
-            console.log(aggregate);
-            console.log('==========END aggregate=========');
+            logger.trace(`state of aggregate returning`);
+            logger.trace(aggregate);
 
             return aggregate;
           } catch (err) {
-            console.log('==========err=========');
-            console.log(err);
-            console.log('==========ENDerr=========');
+            logger.error(`Error thrown by eventRepository 'getById' this may have been a check for existing aggregate.`);
+            logger.error(err);
           }
         };
 
@@ -118,13 +113,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             streamName = aggregate.type + aggregate._id;
             newEvents = aggregate.getUncommittedEvents();
             originalVersion = aggregate._version - newEvents.length;
-            console.log('==========aggregate._version=========');
-            console.log(aggregate._version);
-            console.log('==========END aggregate._version=========');
-
-            console.log('==========originalVersion=========');
-            console.log(originalVersion);
-            console.log('==========END originalVersion=========');
+            logger.debug(`current aggregate version: ${aggregate._version}, original version: ${originalVersion}`);
 
             events = newEvents.map(e=> {
               e.metadata = metadata;
@@ -139,9 +128,9 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
 
             aggregate.clearUncommittedEvents();
           } catch (err) {
-            console.log('==========err=========');
-            console.log(err);
-            console.log('==========ENDerr=========');
+            logger.error(`Error thrown by event repository save`);
+            logger.error(err);
+            throw err;
           }
           //largely for testing purposes
           return appendData;

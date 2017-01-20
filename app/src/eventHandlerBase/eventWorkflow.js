@@ -25,9 +25,8 @@ module.exports = function(dispatchNotification,
       logger.trace('message for ' + handlerName + ' notification disaptched');
 
     } catch (ex) {
-      console.log('==========ex=========');
-      console.log(ex);
-      console.log('==========END ex=========');
+      logger.debug(`An exception in event worflow thrown, this may just be non idempotent catch though`);
+      logger.debug(ex);
 
       // here we need to determin if this is a catastrophic failure, and if so best to throw
       await dispatchNotification("Failure", event, ex)
