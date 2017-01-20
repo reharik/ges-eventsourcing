@@ -11,7 +11,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
             streamName,
             'must pass a valid stream name'
         );
-        console.log('==========streamName=========');
+        console.log('==========append to stream streamName=========');
         console.log(streamName);
         console.log('==========END streamName=========');
 
