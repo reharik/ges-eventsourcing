@@ -20,7 +20,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
         var getById = async function(aggregateType, id) {
           var streamName;
           var aggregate;
-          var sliceStart = 0;
+          var sliceStart = -1;
           var currentSlice;
           var sliceCount;
           try {
@@ -36,6 +36,9 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             // );
 
             streamName = aggregateType.aggregateName() + id;
+            console.log(`==========streamName=========`);
+            console.log(streamName);
+            console.log(`==========END streamName=========`);
             // this might be problematic
             aggregate = new aggregateType();
 
