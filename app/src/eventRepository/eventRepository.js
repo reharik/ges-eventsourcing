@@ -67,7 +67,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
               }
 
               logger.trace(`events returned in current slice`);
-              logger.trace(currentSlice.Events);
+              logger.trace(JSON.stringify(currentSlice.Events));
 
               sliceStart = currentSlice.NextEventNumber;
               currentSlice.Events.forEach(e => {
@@ -76,7 +76,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
 
             } while (!currentSlice.IsEndOfStream);
             logger.trace(`state of aggregate returning`);
-            logger.trace(aggregate);
+            logger.trace(JSON.stringify(aggregate));
 
             return aggregate;
           } catch (err) {
