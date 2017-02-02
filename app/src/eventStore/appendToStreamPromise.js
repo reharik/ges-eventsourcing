@@ -31,7 +31,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
                     logger.debug('rejecting appendToStream Promise with error message: ' + err);
                     reject(err);
                 } else {
-                    logger.debug('resolving appendToStream Promise with response: ' + ef.parseData(result).getOrElse());
+                    logger.debug('resolving appendToStream Promise');
                     resolve(result);
                 }
             });
