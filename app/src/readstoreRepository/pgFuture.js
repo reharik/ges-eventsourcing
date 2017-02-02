@@ -13,9 +13,6 @@ module.exports = function(pg, R, _fantasy, appfuncs) {
                     }
                     pgClient.query(query, (err, result) => {
                         if (err) {
-                            console.log(`==========err=========`);
-                            console.log(err);
-                            console.log(`==========END err=========`);
                             rej(fh.loggerTap(err,'error'));
                             return pgClient.end();
                         }
