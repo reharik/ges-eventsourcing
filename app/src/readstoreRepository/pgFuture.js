@@ -6,7 +6,7 @@ module.exports = function(pg, R, _fantasy, appfuncs) {
         var Future  = fh.Future;
         return function(query, handleResult) {
             return Future((rej, ret) => {
-                var pgClient = new pg.Client(options.connectionString + options.database);
+                var pgClient = new pg.Client(options.config);
                 pgClient.connect(cErr => {
                     if (cErr) {
                         throw new Error('Error connecting to postgres', cErr);
