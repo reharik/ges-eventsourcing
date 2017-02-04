@@ -11,8 +11,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
             streamName,
             'must pass a valid stream name'
         );
-        logger.trace(`appending following data to stream: ${streamName}`);
-        logger.trace(data);
+        logger.trace(`appending data to stream: ${streamName}`);
 
         invariant(
             data.expectedVersion != undefined,
@@ -31,7 +30,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
                     logger.debug('rejecting appendToStream Promise with error message: ' + err);
                     reject(err);
                 } else {
-                    logger.debug('resolving appendToStream Promise with response: ' + ef.parseData(result).getOrElse());
+                    logger.debug('resolving appendToStream Promise.');
                     resolve(result);
                 }
             });
