@@ -66,9 +66,6 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                 throw new Error('Aggregate Deleted: ' + streamName);
               }
 
-              logger.trace(`events returned in current slice`);
-              logger.trace(JSON.stringify(currentSlice.Events));
-
               sliceStart = currentSlice.NextEventNumber;
               currentSlice.Events.forEach(e => {
                 aggregate.applyEvent(ef.incomingEvent(e))
