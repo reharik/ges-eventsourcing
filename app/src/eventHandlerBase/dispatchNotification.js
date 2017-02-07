@@ -4,7 +4,7 @@ module.exports = function(appfuncs, eventstore) {
     var ef = appfuncs.eventFunctions;
     var notification = () => {
       var data = {
-        result: success,
+        success: success === 'Success',
         initialEvent: event,
         handlerResult
       };
@@ -25,4 +25,4 @@ module.exports = function(appfuncs, eventstore) {
     };
     await eventstore.appendToStreamPromise('notification', notification());
   }
-}
+};
