@@ -32,7 +32,6 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
  SELECT '${uuid.v4() }' , '${fh.getSafeValue('commitPosition', originalPosition, '')}'
 , '${fh.getSafeValue('PreparePosition', originalPosition, '')}', '${eventHandlerName }'
 WHERE NOT EXISTS ( SELECT 1 from "lastProcessedPosition" where "handlerType" = '${eventHandlerName}')`;
-            logger.debug(query);
 
             var handlerResult = r=>_fantasy.Maybe.of(r);
             return pgFuture(query, handlerResult);

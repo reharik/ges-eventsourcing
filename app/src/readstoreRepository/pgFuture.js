@@ -17,7 +17,8 @@ module.exports = function(pg, R, _fantasy, appfuncs) {
                             return pgClient.end();
                         }
                         var payload = handleResult(result);
-                        ret(fh.loggerTap(payload,'debug', JSON.stringify(payload)));
+                        // ret(fh.loggerTap(payload,'debug', JSON.stringify(payload)));
+                        ret(payload);
                         pgClient.end();
                     });
                 });
