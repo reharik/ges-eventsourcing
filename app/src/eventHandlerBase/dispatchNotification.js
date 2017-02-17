@@ -21,6 +21,7 @@ module.exports = function(appfuncs, eventstore) {
         data,
         metadata
       };
+
       return {
         expectedVersion: -2, // -2 corresponds to expectedVersion:any
         events: [ef.outGoingEvent(_notification)]

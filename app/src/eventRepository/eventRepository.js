@@ -112,6 +112,8 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             originalVersion = aggregate._version - newEvents.length;
             logger.debug(`current aggregate version: ${aggregate._version}, original version: ${originalVersion}`);
 
+            logger.trace(`appending ${JSON.stringify(newEvents)} to stream: ${streamName}`);
+
             events = newEvents.map(e=> {
               e.metadata = metadata;
               return ef.outGoingEvent(e)
