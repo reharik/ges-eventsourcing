@@ -11,7 +11,7 @@ module.exports = function appendToStreamPromise(gesConnection, logger, invariant
             streamName,
             'must pass a valid stream name'
         );
-        logger.trace(`appending ${JSON.stringify(data)} to stream: ${streamName}`);
+        logger.trace(`appending ${JSON.stringify({...data})} to stream: ${streamName}`);
 
         invariant(
             data.expectedVersion != undefined,
