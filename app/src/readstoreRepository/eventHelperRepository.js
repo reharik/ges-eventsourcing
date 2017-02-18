@@ -8,8 +8,8 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
             var handleResult = x => {
                 const row = x.rows[0];
                 const rowPosition = row && row.commitPosition ? row.commitPosition : 0;
-                logger.debug(`event commit possition ${originalPosition.CommitPosition}`);
-                logger.debug(`db commit possition ${rowPosition}`);
+                logger.debug(`event commit possition ${originalPosition.CommitPosition}. 
+                    db commit possition ${rowPosition}.`);
                 var idempotent = parseInt(originalPosition.CommitPosition) > parseInt(rowPosition);
                 var result = {isIdempotent: idempotent};
                 logger.debug(result);

@@ -35,7 +35,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             //   "version number must be greater than or equal to 0"
             // );
 
-            streamName = aggregateType.aggregateName() + id;
+            streamName = `${aggregateType.aggregateName()}-${id}`;
             logger.debug(`Getting Aggregate by id with streamname: ${streamName}`);
             // this might be problematic
             aggregate = new aggregateType();
@@ -107,7 +107,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
 
             // add extra data to metadata portion of persisted event
             metadata = extend(metadata, _metadata);
-            streamName = aggregate.type + aggregate._id;
+            streamName = `${aggregate.type}-${aggregate._id}`;
             newEvents = aggregate.getUncommittedEvents();
             originalVersion = aggregate._version - newEvents.length;
             logger.debug(`current aggregate version: ${aggregate._version}, original version: ${originalVersion}`);
