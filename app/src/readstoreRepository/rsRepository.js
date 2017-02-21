@@ -17,6 +17,18 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
             return pgFuture(query, handlerResult);
         },
 
+        getByIds: function(ids, table) {
+            var query         = (`SELECT * from "${table}" where "id" in '(${ids.split(',')})'`);
+            logger.debug(query);
+            var handlerResult = x => {
+                const row = x.rows[0];
+                return row && row.document ? row.document : {}
+            };
+
+            // var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
+            return pgFuture(query, handlerResult);
+        },
+
         save: function(table, document, id) {
             var query;
             if (id) {
