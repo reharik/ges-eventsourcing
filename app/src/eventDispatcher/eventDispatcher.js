@@ -1,4 +1,4 @@
-var eventDispatcher = function eventDispatcher(eventstore,
+var eventDispatcher = function eventDispatcher(gesConnection,
                                                logger,
                                                rx,
                                                R,
