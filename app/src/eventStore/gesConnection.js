@@ -2,13 +2,13 @@
 "use strict";
 
 module.exports = function() {
-    return function(_options, esClient, logger) {
+    return function(_options, eventstorenode, logger) {
         var options = _options && _options.eventstore ? _options.eventstore : {};
         var connection;
         logger.trace('accessing gesConnection');
         if (!connected) {
             logger.trace('IP:' + options.host + ':1113');
-            connection = esClient.createConnection({},{ hostname: options.host, port: 1113 });
+            connection = eventstorenode.createConnection({},{ hostname: options.host, port: 1113 });
             connection.connect();
             connection.once('connected', (tcpEndPoint) => {
               logger.debug('gesConnection: ' + JSON.stringify(connection, null, 4));

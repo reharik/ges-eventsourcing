@@ -1,9 +1,9 @@
 "use strict";
 
-module.exports = function(esClient, gesConnection, logger ) {
+module.exports = function(eventstorenode, gesConnection, logger ) {
   return function eventstore(options) {
 
-    const credentialsForAllEventsStream = new esClient.UserCredentials(options.systemUsers.admin, options.adminPassword);
+    const credentialsForAllEventsStream = new eventstorenode.UserCredentials(options.systemUsers.admin, options.adminPassword);
 
     const eventEmitterInstance = () => (event) => {
     const em = new events.EventEmitter();
@@ -25,10 +25,10 @@ module.exports = function(esClient, gesConnection, logger ) {
       eventEmitterInstance,
       liveProcessingStarted,
       subscriptionDropped,
-      gesConnection: gesConnection(options, esClient, logger),
-      createEventData:esClient.createEventData,
-      createJsonEventData:esClient.createJsonEventData,
-      expectedVersion: esClient.expectedVersion,
+      gesConnection: gesConnection(options, eventstorenode, logger),
+      createEventData:eventstorenode.createEventData,
+      createJsonEventData:eventstorenode.createJsonEventData,
+      expectedVersion: eventstorenode.expectedVersion,
       credentials: credentialsForAllEventsStream
     };
   }
