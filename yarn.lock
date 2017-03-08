@@ -100,14 +100,14 @@ ap@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/ap/-/ap-0.2.0.tgz#ae0942600b29912f0d2b14ec60c45e8f330b6110"
 
-appdomain@reharik/mf_domain.git:
+appdomain@reharik/mf_domain:
   version "1.0.0"
-  resolved "https://codeload.github.com/reharik/mf_domain/tar.gz/f074ed9545cf6c4f124940b1835c9da63ba76f1e"
+  resolved "https://codeload.github.com/reharik/mf_domain/tar.gz/51b91827662b26e5505a248b37c2fca11c9adac4"
   dependencies:
     JSON "^1.0.0"
     bluebird "^3.4.1"
-    corelogger reharik/core_logger.git
-    dagon reharik/dagon.git
+    corelogger reharik/core_logger
+    dagon reharik/dagon
     extend "^3.0.0"
     invariant "^2.1.0"
     moment "^2.17.1"
@@ -922,7 +922,7 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-corelogger@reharik/core_logger.git:
+corelogger@reharik/core_logger:
   version "0.0.1"
   resolved "https://codeload.github.com/reharik/core_logger/tar.gz/2d758bd2edf074ae7d34939efba1656da29b2631"
   dependencies:
@@ -966,7 +966,7 @@ d@^0.1.1, d@~0.1.1:
   dependencies:
     es5-ext "~0.10.2"
 
-dagon@reharik/dagon.git:
+dagon@reharik/dagon:
   version "1.2.0"
   resolved "https://codeload.github.com/reharik/dagon/tar.gz/db811b45d8f296edd808de82ae8b47f6cb87a590"
   dependencies:
@@ -1233,11 +1233,11 @@ es6-weak-map@^2.0.1:
     es6-iterator "2"
     es6-symbol "3"
 
-escape-string-regexp@1.0.2, escape-string-regexp@^1.0.2:
+escape-string-regexp@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz#4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
 
-escape-string-regexp@^1.0.3, escape-string-regexp@^1.0.5:
+escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.3, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
