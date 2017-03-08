@@ -1,9 +1,3 @@
-/**
- * Created by reharik on 11/13/15.
- */
-
-"use strict";
-
 module.exports = function mapAndFilterStream(appfuncs, R,treis) {
     return function(streamType) {
         var ef = appfuncs.eventFunctions;

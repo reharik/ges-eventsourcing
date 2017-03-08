@@ -1,20 +1,35 @@
 "use strict";
 
-module.exports = function(appendToStreamPromise, readStreamEventsForwardPromise, gesConnection, gesclient, extend ) {
-    return function eventstore(_options) {
-        return {
-            appendToStreamPromise         : appendToStreamPromise,
-            readStreamEventsForwardPromise: readStreamEventsForwardPromise,
-            subscribeToAllFrom            : gesConnection.subscribeToAllFrom.bind(gesConnection),
-            gesClientHelpers              : {
-                getStreamMetadata   : gesConnection.getStreamMetadata.bind(gesConnection),
-                setStreamMetadata   : gesConnection.setStreamMetadata.bind(gesConnection),
-                createStreamMetadata: gesclient.createStreamMetadata,
-                systemRoles         : gesclient.systemRoles,
-                systemUsers         : gesclient.systemUsers
-            },
-            //this is for debug purposes only please remove
-            gesConnection                 : gesConnection
-        };
-    }
+module.exports = function(esClient, gesConnection, logger ) {
+  return function eventstore(options) {
+
+    const credentialsForAllEventsStream = new esClient.UserCredentials(options.systemUsers.admin, options.adminPassword);
+
+    const eventEmitterInstance = () => (event) => {
+    const em = new events.EventEmitter();
+      em.emit('event', event);
+    };
+
+    const liveProcessingStarted = () => {
+      logger.trace("Caught up with previously stored events. Listening for new events.");
+    };
+
+    const subscriptionDropped = (subscription, reason, error) => {
+      if (error) {
+        logger.error(error);
+      }
+      logger.info('Subscription dropped.');
+    };
+
+    return {
+      eventEmitterInstance,
+      liveProcessingStarted,
+      subscriptionDropped,
+      gesConnection: gesConnection(options, esClient, logger),
+      createEventData:esClient.createEventData,
+      createJsonEventData:esClient.createJsonEventData,
+      expectedVersion: esClient.expectedVersion,
+      credentials: credentialsForAllEventsStream
+    };
+  }
 };

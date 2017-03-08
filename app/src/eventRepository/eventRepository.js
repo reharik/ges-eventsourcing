@@ -53,10 +53,10 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
               // sliceCount = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
               // get all events, or first batch of events from GES
 
-              currentSlice = await eventstore.readStreamEventsForwardPromise(streamName, {
-                start: sliceStart,
-                count: options.readPageSize
-              });
+              currentSlice = await eventstore.gesConnection.readStreamEventsForward(streamName,
+                                                                                    sliceStart,
+                                                                                    options.readPageSize,
+                                                                                    eventstore.credentials);
               //validate
               if (currentSlice.Status == 'StreamNotFound') {
                 throw new Error('Aggregate not found: ' + streamName);
@@ -114,16 +114,11 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
 
             logger.trace(`appending ${JSON.stringify(newEvents)} to stream: ${streamName}`);
 
-            events = newEvents.map(e=> {
-              e.metadata = metadata;
-              return ef.outGoingEvent(e)
-            });
+            events = newEvents.map(e=>
+              eventstore.createJsonEventData(uuid.v4(), e, metadata, e.Type || '')
+            );
 
-            appendData = {
-              expectedVersion: originalVersion,
-              events: events
-            };
-            await eventstore.appendToStreamPromise(streamName, appendData);
+            await eventstore.gesConnection.appendToStream(streamName, originalVersion, events, eventstore.credentials);
 
             aggregate.clearUncommittedEvents();
           } catch (err) {
@@ -132,7 +127,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             throw err;
           }
           //largely for testing purposes
-          return appendData;
+          return events;
         };
 
         return {
