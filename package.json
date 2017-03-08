@@ -28,7 +28,7 @@
     "co-queue": "^2.0.0",
     "corelogger": "reharik/core_logger",
     "dagon": "reharik/dagon",
-    "eventstore-node": "^0.0.28",
+    "eventstore-node": "^0.0.29",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
     "is-object-empty": "^1.0.0",
