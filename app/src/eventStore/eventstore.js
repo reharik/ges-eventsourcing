@@ -1,13 +1,21 @@
 "use strict";
 
-module.exports = function(eventstorenode, gesConnection, logger ) {
+module.exports = function(eventstorenode, gesConnection, logger, events ) {
   return function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream = new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.adminPassword);
 
-    const eventEmitterInstance = () => (event) => {
-    const em = new events.EventEmitter();
-      em.emit('event', event);
+    class MyEmitter extends events.EventEmitter {
+      constructor() {
+        super();
+      }
+      emitEvent(e) {
+        this.emit('event', e);
+      }
+    }
+    const eventEmitterInstance = () =>  {
+      const emitter = new MyEmitter();
+      return emitter.emitEvent;
     };
 
     const liveProcessingStarted = () => {

@@ -14,8 +14,9 @@ var eventDispatcher = function eventDispatcher(eventstore,
           .map(mAndF.transformEvent)
           .share();
 
-        var subscription = eventstore.gesConnection.subscribeToAllFrom(
+        var subscription = eventstore.gesConnection.subscribeToStreamFrom(
           streamType,
+          0,
           true,
           eventAppeared,
           eventstore.liveProcessingStarted,
