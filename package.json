@@ -21,8 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "JSON": "^1.0.0",
-    "appdomain": "reharik/mf_domain",
-    "bluebird": "^3.4.1",
+ya    "bluebird": "^3.4.1",
     "buffer": "^3.4.2",
     "co": "^4.6.0",
     "co-queue": "^2.0.0",
