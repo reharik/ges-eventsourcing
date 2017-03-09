@@ -21,7 +21,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
 
         logger.info("subscription.isSubscribedToAll: " + subscription.isSubscribedToAll);
 
-        return rx.Observable.fromEvent(eventAppeared, 'event')
+        return rx.Observable.fromEvent(eventAppeared.emmiter, 'event')
                   .filter(mAndF.isValidStreamType)
                   .map(mAndF.transformEvent)
                   .share();
