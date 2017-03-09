@@ -20,12 +20,15 @@ module.exports = function(eventstorenode, gesConnection, logger ) {
       }
       logger.info('Subscription dropped.');
     };
-
+    let ges = gesConnection;
+    if(typeof gesConnection === 'function'){
+      ges = gesConnection(options);
+    }
     return {
       eventEmitterInstance,
       liveProcessingStarted,
       subscriptionDropped,
-      gesConnection: gesConnection(options),
+      gesConnection: ges,
       createEventData:eventstorenode.createEventData,
       createJsonEventData:eventstorenode.createJsonEventData,
       expectedVersion: eventstorenode.expectedVersion,
