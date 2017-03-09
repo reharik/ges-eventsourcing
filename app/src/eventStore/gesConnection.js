@@ -9,7 +9,7 @@ module.exports = function(eventstorenode, logger) {
       connection = eventstorenode.createConnection({verbose: options.verbose, log:logger},{ host: options.host, port: 1113 });
       connection.connect();
       connection.once('connected', (tcpEndPoint) => {
-        logger.debug('gesConnection: ' + JSON.stringify(connection, null, 4));
+        logger.debug('gesConnection: ' + connection);
       })
     }
     connection.on('error', function (err) {
