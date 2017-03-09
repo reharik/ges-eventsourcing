@@ -1,8 +1,8 @@
 
 "use strict";
 
-module.exports = function() {
-    return function(_options, eventstorenode, logger) {
+module.exports = function(eventstorenode, logger) {
+    return function(_options) {
         var options = _options && _options.eventstore ? _options.eventstore : {};
         var connection;
         logger.trace('accessing gesConnection');

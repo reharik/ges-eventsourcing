@@ -25,7 +25,7 @@ module.exports = function(eventstorenode, gesConnection, logger ) {
       eventEmitterInstance,
       liveProcessingStarted,
       subscriptionDropped,
-      gesConnection: gesConnection(options, eventstorenode, logger),
+      gesConnection: gesConnection(options),
       createEventData:eventstorenode.createEventData,
       createJsonEventData:eventstorenode.createJsonEventData,
       expectedVersion: eventstorenode.expectedVersion,
