@@ -9,10 +9,6 @@ var eventDispatcher = function eventDispatcher(eventstore,
         logger.info('startDispatching | startDispatching called');
         const eventAppeared = eventstore.eventEmitterInstance();
         var mAndF = mapAndFilterStream(streamType);
-        // return rx.Observable.fromEvent(eventAppeared, 'event')
-        //   .filter(mAndF.isValidStreamType)
-        //   .map(mAndF.transformEvent)
-        //   .share();
 
         var subscription = eventstore.gesConnection.subscribeToStreamFrom(
           streamType,
@@ -24,6 +20,11 @@ var eventDispatcher = function eventDispatcher(eventstore,
           eventstore.credentialsForAllEventsStream);
 
         logger.info("subscription.isSubscribedToAll: " + subscription.isSubscribedToAll);
+
+        return rx.Observable.fromEvent(eventAppeared, 'event')
+                  .filter(mAndF.isValidStreamType)
+                  .map(mAndF.transformEvent)
+                  .share();
 
       }
     }
