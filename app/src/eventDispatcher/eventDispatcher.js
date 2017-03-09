@@ -14,7 +14,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
           streamType,
           0,
           true,
-          eventAppeared,
+          eventAppeared.emitEvent,
           eventstore.liveProcessingStarted,
           eventstore.subscriptionDropped,
           eventstore.credentialsForAllEventsStream);

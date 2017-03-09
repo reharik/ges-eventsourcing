@@ -14,8 +14,7 @@ module.exports = function(eventstorenode, gesConnection, logger, events ) {
       }
     }
     const eventEmitterInstance = () =>  {
-      const emitter = new MyEmitter();
-      return emitter.emitEvent;
+      return  new MyEmitter();
     };
 
     const liveProcessingStarted = () => {
