@@ -8,7 +8,7 @@ module.exports = function() {
         logger.trace('accessing gesConnection');
         if (!connection) {
             logger.trace('IP:' + options.host + ':1113');
-            connection = eventstorenode.createConnection({},{ hostname: options.host, port: 1113 });
+            connection = eventstorenode.createConnection({},{ host: options.host, port: 1113 });
             connection.connect();
             connection.once('connected', (tcpEndPoint) => {
               logger.debug('gesConnection: ' + JSON.stringify(connection, null, 4));
