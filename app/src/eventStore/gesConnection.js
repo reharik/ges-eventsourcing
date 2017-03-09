@@ -6,7 +6,7 @@ module.exports = function() {
         var options = _options && _options.eventstore ? _options.eventstore : {};
         var connection;
         logger.trace('accessing gesConnection');
-        if (!connected) {
+        if (!connection) {
             logger.trace('IP:' + options.host + ':1113');
             connection = eventstorenode.createConnection({},{ hostname: options.host, port: 1113 });
             connection.connect();
