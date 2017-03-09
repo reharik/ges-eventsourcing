@@ -2,8 +2,8 @@
 
 module.exports = function(eventstorenode, gesConnection, logger ) {
   return function eventstore(options) {
-
-    const credentialsForAllEventsStream = new eventstorenode.UserCredentials(options.systemUsers.admin, options.adminPassword);
+    const configs = options.eventstore;
+    const credentialsForAllEventsStream = new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.adminPassword);
 
     const eventEmitterInstance = () => (event) => {
     const em = new events.EventEmitter();
