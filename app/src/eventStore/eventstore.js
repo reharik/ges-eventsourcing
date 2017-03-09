@@ -9,7 +9,7 @@ module.exports = function(eventstorenode, gesConnection, logger, events ) {
       constructor() {
         super();
       }
-      emitEvent(e) {
+      emitEvent(subscription, e) {
         this.emit('event', e);
       }
     }
