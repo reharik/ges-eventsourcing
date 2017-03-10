@@ -30,6 +30,14 @@ module.exports = function(eventstorenode, gesConnection, logger, events ) {
     if(typeof gesConnection === 'function'){
       ges = gesConnection(options);
     }
+
+    const commandPoster = async function (command, commandName, continuationId) {
+      // fortify commands with metadata like date and user
+      command.createDate = new Date();
+      let event = eventstorenode.createJsonEventData(uuid.v4(), command, {eventName:commandName, continuationId, streamType:'command'}, commandName);
+      await gesConnection.appendToStream('command', eventstorenode.expectedVersion.any, event, credentialsForAllEventsStream);
+    };
+
     return {
       eventEmitterInstance,
       liveProcessingStarted,
@@ -38,7 +46,8 @@ module.exports = function(eventstorenode, gesConnection, logger, events ) {
       createEventData:eventstorenode.createEventData,
       createJsonEventData:eventstorenode.createJsonEventData,
       expectedVersion: eventstorenode.expectedVersion,
-      credentials: credentialsForAllEventsStream
+      credentials: credentialsForAllEventsStream,
+      commandPoster
     };
   }
 };
