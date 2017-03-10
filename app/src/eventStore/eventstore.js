@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(eventstorenode, gesConnection, logger, events ) {
+module.exports = function(eventstorenode, gesConnection, logger, events, uuid) {
   return function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream = new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.adminPassword);
