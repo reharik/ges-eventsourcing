@@ -13,7 +13,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
         var subscription = eventstore.gesConnection.subscribeToStreamFrom(
           streamType,
           0,
-          true,
+          false,
           eventAppeared.emitEvent,
           eventstore.liveProcessingStarted,
           eventstore.subscriptionDropped,
