@@ -5,16 +5,15 @@ module.exports = function(eventstorenode, gesConnection, logger, events ) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream = new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.adminPassword);
 
-    class MyEmitter extends events.EventEmitter {
-      constructor() {
-        super();
-      }
-      emitEvent(subscription, e) {
-        this.emit('event', e);
-      }
-    }
     const eventEmitterInstance = () =>  {
-      return  new MyEmitter();
+      const emitter = new events.EventEmitter();
+      const emitEvent = (sub, e) => {
+        emitter.emit('event', e);
+      };
+      return {
+        emitter,
+        emitEvent
+      }
     };
 
     const liveProcessingStarted = () => {
