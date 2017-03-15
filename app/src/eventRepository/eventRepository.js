@@ -115,7 +115,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             logger.trace(`appending ${JSON.stringify(newEvents)} to stream: ${streamName}`);
 
             events = newEvents.map(e=>
-              eventstore.createJsonEventData(uuid.v4(), e, metadata, e.Type || '')
+              eventstore.createJsonEventData(uuid.v4(), e, metadata, e.eventName || '')
             );
 
             await eventstore.gesConnection.appendToStream(streamName, originalVersion, events, eventstore.credentials);
