@@ -15,7 +15,7 @@ var noEventTypeEvent = {};
 
 var incomingEvent = {
     Event           : { EventType: 'event' },
-    OriginalPosition: 'the originalPosition',
+    originalEventNumber: '123',
     OriginalEvent   : {
         Metadata: {
             eventName : 'someEventNotificationOn',
