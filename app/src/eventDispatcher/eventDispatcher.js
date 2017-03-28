@@ -10,8 +10,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
         const eventAppeared = eventstore.eventEmitterInstance();
         var mAndF = mapAndFilterStream(streamType);
 
-        var subscription = eventstore.gesConnection.subscribeToStreamFrom(
-          streamType,
+        var subscription = eventstore.gesConnection.subscribeToAllFrom(
           0,
           false,
           eventAppeared.emitEvent,
