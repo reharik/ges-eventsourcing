@@ -1,6 +1,6 @@
 
 module.exports = function(eventstore, uuid) {
-  return async function (success, event, result, uuid, exception) {
+  return async function (success, event, result, exception) {
     var data = {
       success: success === 'Success',
       initialEvent: event,
