@@ -7,7 +7,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
 
             var handleResult = x => {
                 const row = x.rows[0];
-              logger.trace(`==========row=========`);
+              logger.trace(`==========row=========`); 
               logger.trace(row);
               logger.trace(row.commitPossition);
               logger.trace(`==========END row=========`);
