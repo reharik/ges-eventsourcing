@@ -20,7 +20,7 @@ module.exports = function(eventstore, uuid) {
     await eventstore.gesConnection.appendToStream(
       'notification',
       eventstore.expectedVersion.any,
-      notification,
+      [notification],
       eventstore.credentials);
   }
 };
