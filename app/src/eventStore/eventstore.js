@@ -3,7 +3,7 @@
 module.exports = function(eventstorenode, gesConnection, logger, events, uuid) {
   return function eventstore(options) {
     const configs = options.eventstore;
-    const credentialsForAllEventsStream = new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.adminPassword);
+    const credentialsForAllEventsStream = new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
 
     const eventEmitterInstance = () =>  {
       const emitter = new events.EventEmitter();
@@ -22,7 +22,7 @@ module.exports = function(eventstorenode, gesConnection, logger, events, uuid) {
 
     const subscriptionDropped = (subscription, reason, error) => {
       if (error) {
-        logger.error(error);
+        logger.error(error)
       }
       logger.info('Subscription dropped.');
     };
