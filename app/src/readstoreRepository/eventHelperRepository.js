@@ -7,10 +7,10 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
 
             var handleResult = x => {
                 const row = x.rows[0];
-                console.log(`==========row=========`);
-              console.log(row);
-              console.log(row.commitPossition);
-                console.log(`==========END row=========`);
+              logger.trace(`==========row=========`);
+              logger.trace(row);
+              logger.trace(row.commitPossition);
+              logger.trace(`==========END row=========`);
                 const rowPosition = row && row.commitPosition ? row.commitPosition : -1;
                 logger.debug(`event commit possition ${originalEventNumber}. 
                     db commit possition ${rowPosition}.`);
