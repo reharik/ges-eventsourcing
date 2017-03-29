@@ -15,7 +15,7 @@ var noEventTypeEvent = {};
 
 var incomingEvent = {
     Event           : { EventType: 'event' },
-    originalEventNumber: '123',
+  commitPosition: '123',
     OriginalEvent   : {
         Metadata: {
             eventName : 'someEventNotificationOn',

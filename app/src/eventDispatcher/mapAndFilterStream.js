@@ -19,15 +19,18 @@ module.exports = function mapAndFilterStream(appfuncs, R,treis) {
     var eventName = R.compose(R.chain(fh.safeProp('eventType')),fh.safeProp('event'));
     //continuationId:: JSON -> Maybe uuid
     var continuationId = R.compose(R.chain(fh.safeProp('continuationId')), ef.parseMetadata);
-    //originalEventNumber:: JSON -> Maybe JSON
-    var originalEventNumber = fh.safeProp('originalEventNumber');
+    //commitPosition:: JSON -> Maybe JSON
+    var commitPosition = R.compose(
+      R.chain(fh.safeProp('low')),
+      R.chain(fh.safeProp('commitPosition')),
+      fh.safeProp('originalPosition'));
 
     //transformEvent:: JSON -> Maybe JSON
     var transformEvent = function(payload) {
       return {
         eventName       : eventName(payload).getOrElse(),
         continuationId  : continuationId(payload).getOrElse(),
-        originalEventNumber: originalEventNumber(payload).getOrElse(),
+        commitPosition: commitPosition(payload).getOrElse(),
         data            : ef.parseData(payload).getOrElse(),
         metadata            : ef.parseMetadata(payload).getOrElse()
       };
@@ -39,7 +42,7 @@ module.exports = function mapAndFilterStream(appfuncs, R,treis) {
       isValidStreamType,
       eventName,
       continuationId,
-      originalEventNumber,
+      commitPosition,
       transformEvent
     }
   }
