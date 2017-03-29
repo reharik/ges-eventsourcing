@@ -11,7 +11,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
         var mAndF = mapAndFilterStream(streamType);
 
         var subscription = eventstore.gesConnection.subscribeToAllFrom(
-          0,
+          null,
           false,
           eventAppeared.emitEvent,
           eventstore.liveProcessingStarted,
