@@ -16,7 +16,7 @@ var eventDispatcher = function eventDispatcher(eventstore,
           eventAppeared.emitEvent,
           eventstore.liveProcessingStarted,
           eventstore.subscriptionDropped,
-          eventstore.credentialsForAllEventsStream);
+          eventstore.credentials);
 
         logger.info("subscription.isSubscribedToAll: " + subscription.isSubscribedToAll);
 
