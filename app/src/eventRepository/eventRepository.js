@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend ) {
+module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend, mapAndFilterStream ) {
   return function(_options) {
     var ef      = appfuncs.eventFunctions;
     var options = {
@@ -67,9 +67,11 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
             throw new Error('Aggregate Deleted: ' + streamName);
           }
 
+          var mAndF = mapAndFilterStream();
+
           sliceStart = currentSlice.nextEventNumber;
           currentSlice.events.forEach(e => {
-            aggregate.applyEvent(ef.incomingEvent(e))
+            aggregate.applyEvent(mAndF.transformEvent(e).data)
           });
 
         } while (!currentSlice.isEndOfStream);
