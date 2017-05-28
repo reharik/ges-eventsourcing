@@ -26,6 +26,7 @@ module.exports = function(eventstorenode, gesConnection, logger, events, uuid) {
       }
       logger.info('Subscription dropped.');
     };
+
     let ges = gesConnection;
     if(typeof gesConnection === 'function'){
       ges = gesConnection(options);

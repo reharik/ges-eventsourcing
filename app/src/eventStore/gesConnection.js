@@ -18,7 +18,12 @@ module.exports = function(eventstorenode, logger) {
 
     connection.on('closed', function (reason) {
       logger.info('ES connection closed, reason:', reason);
+      connection.connect();
     });
     return connection;
   };
 };
+
+
+
+//console.log(eventstore.gesConnection._handler._state);
