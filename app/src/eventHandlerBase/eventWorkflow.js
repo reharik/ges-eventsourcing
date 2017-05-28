@@ -23,11 +23,11 @@ module.exports = function(dispatchNotification,
       logger.trace('message for ' + handlerName + ' recorded as processed ' + event.eventName);
 
       await dispatchNotification("Success", event, handlerResult);
-      logger.trace(`message ${eventName} for ${handlerName} notification disaptched`);
+      logger.trace(`message ${event.eventName} for ${handlerName} notification disaptched`);
 
     } catch (ex) {
       if(ex.message === "item has already been processed") { return; }
-      logger.debug(`An exception processing event ${eventName} in workflow: ${handlerName} was thrown`);
+      logger.debug(`An exception processing event ${event.eventName} in workflow: ${handlerName} was thrown`);
       logger.debug(ex);
 
       // here we need to determin if this is a catastrophic failure, and if so best to throw
