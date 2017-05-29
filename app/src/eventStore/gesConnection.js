@@ -1,4 +1,4 @@
-module.exports = function(eventstorenode, logger) {
+module.exports = function(eventstorenodeclient, logger) {
   return function(_options) {
     let options = _options && _options.eventstore ? _options.eventstore : {};
     let connection;

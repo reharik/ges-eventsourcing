@@ -1,6 +1,6 @@
 
 
-module.exports = function(eventstorenode, gesConnection, logger, events, uuid) {
+module.exports = function(eventstorenodeclient, gesConnection, logger, events, uuid) {
   return function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream =
