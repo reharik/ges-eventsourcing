@@ -1,35 +1,33 @@
 /**
  * Created by rharik on 6/10/15.
  */
-"use strict";
+
 
 module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend, mapAndFilterStream ) {
   return function(_options) {
-    var ef      = appfuncs.eventFunctions;
-    var options = {
+    let options = {
       readPageSize: 500,
-      streamType  : 'event'
+      streamType: 'event'
     };
     extend(options, _options || {});
 
     invariant(
       options.readPageSize,
-      "repository requires a read size greater than 0"
+      'repository requires a read size greater than 0'
     );
 
-    var getById = async function(aggregateType, id) {
-      var streamName;
-      var aggregate;
-      var sliceStart = 0;
-      var currentSlice;
-      var sliceCount;
+    let getById = async function(aggregateType, id) {
+      let streamName;
+      let aggregate;
+      let sliceStart = 0;
+      let currentSlice;
       try {
         invariant(
           (aggregateType.isAggregateBase && aggregateType.isAggregateBase()),
-          "aggregateType must inherit from AggregateBase"
+          'aggregateType must inherit from AggregateBase'
         );
 
-        invariant(id, "id must be a present");
+        invariant(id, 'id must be a present');
         // invariant(
         //   (version >= 0),
         //   "version number must be greater than or equal to 0"
@@ -50,7 +48,8 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         do {
           // specify number of events to pull. if number of events too large for one call use limit
 
-          // sliceCount = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
+          // sliceCount = sliceStart + options.readPageSize
+          // <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
           // get all events, or first batch of events from GES
 
           currentSlice = await eventstore.gesConnection.readStreamEventsForward(streamName,
@@ -59,19 +58,19 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
             eventstore.credentials);
 
           //validate
-          if (currentSlice.status == 'StreamNotFound') {
+          if (currentSlice.status === 'StreamNotFound') {
             throw new Error('Aggregate not found: ' + streamName);
           }
           //validate
-          if (currentSlice.status == 'StreamDeleted') {
+          if (currentSlice.status === 'StreamDeleted') {
             throw new Error('Aggregate Deleted: ' + streamName);
           }
 
-          var mAndF = mapAndFilterStream();
+          let mAndF = mapAndFilterStream();
 
           sliceStart = currentSlice.nextEventNumber;
           currentSlice.events.forEach(e => {
-            aggregate.applyEvent(mAndF.transformEvent(e).data)
+            aggregate.applyEvent(mAndF.transformEvent(e).data);
           });
 
         } while (!currentSlice.isEndOfStream);
@@ -85,18 +84,16 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
       }
     };
 
-    var save = async function(aggregate, _metadata) {
-      var streamName;
-      var newEvents;
-      var metadata;
-      var originalVersion;
-      var events;
-      var appendData;
-      var result;
+    let save = async function(aggregate, _metadata) {
+      let streamName;
+      let newEvents;
+      let metadata;
+      let originalVersion;
+      let events;
       try {
         invariant(
           (aggregate.isAggregateBase && aggregate.isAggregateBase()),
-          "aggregateType must inherit from AggregateBase"
+          'aggregateType must inherit from AggregateBase'
         );
         // standard data for metadata portion of persisted event
         metadata = {
@@ -134,8 +131,8 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
     };
 
     return {
-      getById: getById,
-      save   : save
-    }
+      getById,
+      save
+    };
   };
 };

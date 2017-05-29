@@ -1,7 +1,7 @@
 
 module.exports = function(eventstore, uuid) {
-  return async function (success, event, result, exception) {
-    var data = {
+  return async function(success, event, result, exception) {
+    let data = {
       success: success === 'Success',
       initialEvent: event,
       handlerResult: result
@@ -9,18 +9,18 @@ module.exports = function(eventstore, uuid) {
     if (!data.success) {
       data.exception = exception;
     }
-    var metadata = {
+    let metadata = {
       continuationId: event.continuationId || null,
       eventName: 'notification',
       streamType: 'notification'
     };
 
-    var notification = eventstore.createJsonEventData(uuid.v4(), data, metadata, 'notification');
+    let notification = eventstore.createJsonEventData(uuid.v4(), data, metadata, 'notification');
 
     await eventstore.gesConnection.appendToStream(
       'notification',
       eventstore.expectedVersion.any,
       [notification],
       eventstore.credentials);
-  }
+  };
 };
