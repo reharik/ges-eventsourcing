@@ -1,20 +1,31 @@
-var eventDispatcher = function eventDispatcher(eventstore,
+let eventDispatcher = function eventDispatcher(eventstore,
                                                logger,
                                                rx,
                                                R,
                                                mapAndFilterStream) {
-    return function() {
-        return {
-            startDispatching: function(streamType) {
-                logger.info('startDispatching | startDispatching called');
+  return function() {
+    return {
+      startDispatching(streamType) {
+        logger.info('startDispatching | startDispatching called');
+        const eventAppeared = eventstore.eventEmitterInstance();
+        let mAndF = mapAndFilterStream(streamType);
 
-                var mAndF  = mapAndFilterStream(streamType);
-                return rx.Observable.fromEvent(eventstore.subscribeToAllFrom(), 'event')
-                  .filter(mAndF.isValidStreamType)
-                  .map(mAndF.transformEvent)
-                  .share();
-            }
-        }
+        let subscription = eventstore.gesConnection.subscribeToAllFrom(
+          null,
+          false,
+          eventAppeared.emitEvent,
+          eventstore.liveProcessingStarted,
+          eventstore.subscriptionDropped,
+          eventstore.credentials);
+
+        logger.info('subscription.isSubscribedToAll: ' + subscription.isSubscribedToAll);
+
+        return rx.Observable.fromEvent(eventAppeared.emitter, 'event')
+          .filter(mAndF.isValidStreamType)
+          .map(mAndF.transformEvent)
+          .share();
+      }
     };
+  };
 };
 module.exports = eventDispatcher;

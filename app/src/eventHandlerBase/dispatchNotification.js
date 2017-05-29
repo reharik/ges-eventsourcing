@@ -1,32 +1,26 @@
 
-module.exports = function(appfuncs, eventstore) {
-  return async function (success, event, result, exception) {
-    var ef = appfuncs.eventFunctions;
-    var notification = () => {
-      var data = {
-        success: success === 'Success',
-        initialEvent: event,
-        handlerResult: result
-      };
-      if(!data.success){
-        data.exception = exception;
-      }
-      var metadata = {
-        continuationId: event.continuationId || null,
-        eventName: 'notification',
-        streamType: 'notification'
-      };
-      var _notification = {
-        eventName: 'notification',
-        data,
-        metadata
-      };
-
-      return {
-        expectedVersion: -2, // -2 corresponds to expectedVersion:any
-        events: [ef.outGoingEvent(_notification)]
-      }
+module.exports = function(eventstore, uuid) {
+  return async function(success, event, result, exception) {
+    let data = {
+      success: success === 'Success',
+      initialEvent: event,
+      handlerResult: result
     };
-    await eventstore.appendToStreamPromise('notification', notification());
-  }
+    if (!data.success) {
+      data.exception = exception;
+    }
+    let metadata = {
+      continuationId: event.continuationId || null,
+      eventName: 'notification',
+      streamType: 'notification'
+    };
+
+    let notification = eventstore.createJsonEventData(uuid.v4(), data, metadata, 'notification');
+
+    await eventstore.gesConnection.appendToStream(
+      'notification',
+      eventstore.expectedVersion.any,
+      [notification],
+      eventstore.credentials);
+  };
 };

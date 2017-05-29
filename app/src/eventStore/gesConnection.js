@@ -1,20 +1,29 @@
+module.exports = function(eventstorenodeclient, logger) {
+  return function(_options) {
+    let options = _options && _options.eventstore ? _options.eventstore : {};
+    let connection;
+    logger.trace('accessing gesConnection');
 
-"use strict";
+    if (!connection) {
+      logger.trace('IP:' + options.host + ':1113');
+      connection = eventstorenode.createConnection(
+        {verbose: options.verbose, log: logger},
+        { host: options.host, port: 1113 });
+      connection.connect();
+      connection.once('connected', tcpEndPoint => {
+        logger.debug('gesConnection: ' + connection + ' - ' + tcpEndPoint);
+      });
+    }
+    connection.on('error', function(err) {
+      logger.error('Error occurred on ES connection:', err);
+    });
 
-module.exports = function(gesclient, logger, extend) {
-    return function(_options) {
-        var options = _options && _options.eventstore ? _options.eventstore : {};
-        var connection;
-        logger.trace('accessing gesConnection');
-        if (!connection) {
-            logger.debug('creatextending gesConnection');
-            logger.trace('IP:' + options.host + ':1113');
-            connection = gesclient({
-                host: options.host,
-                port: 1113
-            })
-        }
-        logger.debug('gesConnection: ' + JSON.stringify(connection, null, 4));
-        return connection;
-    };
+    connection.on('closed', function(reason) {
+      logger.info('ES connection closed, reason:', reason);
+      connection.connect();
+    });
+    return connection;
+  };
 };
+
+//console.log(eventstore.gesConnection._handler._state);
