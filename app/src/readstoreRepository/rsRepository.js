@@ -93,7 +93,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
     },
 
     saveSingletonAggregateView(table, singleton, document, id) {
-      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(singleton)}'
+      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(singleton)}',
  document = '${JSON.stringify(document)}' where id = '${id}'`;
 
       logger.debug(query);
