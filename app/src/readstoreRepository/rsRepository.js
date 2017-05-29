@@ -48,16 +48,6 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
       return pgFuture(query, handlerResult);
     },
 
-    getSingletonAggregateView(table, id) {
-      let query = (`SELECT * from "${table}" where "id" = '${id}'`);
-      logger.debug(query);
-      let handlerResult = x => {
-        const row = x.rows[0];
-        return row && row.meta ? row.meta : {};
-      };
-      return pgFuture(query, handlerResult);
-    },
-
     getAggregateViewMeta(table, id) {
       let query = (`SELECT * from "${table}" where "id" = '${id}'`);
       logger.debug(query);
@@ -67,14 +57,6 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
       };
 
       // var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
-      return pgFuture(query, handlerResult);
-    },
-
-    insertSingletonAggregateView(table, singleton, document) {
-      let query = `INSERT INTO "${table}" ("id", "meta", "document")
- VALUES ('${singleton.id}','${JSON.stringify(singleton)},'${JSON.stringify(document)}')`;
-      logger.debug(query);
-      let handlerResult = r => _fantasy.Maybe.of(r);
       return pgFuture(query, handlerResult);
     },
 
