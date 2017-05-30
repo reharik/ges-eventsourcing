@@ -30,9 +30,12 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
     },
 
     save(table, document, id) {
-      let query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')
- ON CONFLICT (id) DO UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}'`;
-
+      let query;
+      if (id) {
+        query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}'`;
+      } else {
+        query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')`;
+      }
       logger.debug(query);
       let handlerResult = r => _fantasy.Maybe.of(r);
       return pgFuture(query, handlerResult);
@@ -60,19 +63,20 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
     saveAggregateView(table, aggregate, document) {
       let query;
       if (document.id) {
-        query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')
- ON CONFLICT (id) DO UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}'`;
+        query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}';
+        INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${JSON.stringify(document)}'
+        WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
       }
       let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
-      let sql = `${query || ''};${updateAggSql}`;
+      let sql = `${query};${updateAggSql}`;
       logger.debug(sql);
       let handlerResult = r => _fantasy.Maybe.of(r);
       return pgFuture(sql, handlerResult);
     },
 
-    saveSingletonAggregateView(table, aggregate, document) {
-      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}',
- document = '${JSON.stringify(document)}' where id = '${aggregate.id}'`;
+    saveSingletonAggregateView(table, singleton, document, id) {
+      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(singleton)}',
+ document = '${JSON.stringify(document)}' where id = '${id}'`;
 
       logger.debug(query);
       let handlerResult = r => _fantasy.Maybe.of(r);
