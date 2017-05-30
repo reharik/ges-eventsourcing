@@ -1,10 +1,10 @@
 
 
-module.exports = function(eventstorenodeclient, gesConnection, logger, events, uuid) {
+module.exports = function(nodeeventstoreclient, gesConnection, logger, events, uuid) {
   return function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream =
-      new eventstorenode.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
+      new nodeeventstoreclient.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
 
     const eventEmitterInstance = () => {
       const emitter = new events.EventEmitter();
@@ -36,12 +36,12 @@ module.exports = function(eventstorenodeclient, gesConnection, logger, events, u
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
       command.createDate = new Date();
-      let event = eventstorenode.createJsonEventData(
+      let event = nodeeventstoreclient.createJsonEventData(
         uuid.v4(),
         command,
         {eventName: commandName, continuationId, streamType: 'command'},
         commandName);
-      await ges.appendToStream('command', eventstorenode.expectedVersion.any, [event], credentialsForAllEventsStream);
+      await ges.appendToStream('command', nodeeventstoreclient.expectedVersion.any, [event], credentialsForAllEventsStream);
     };
 
     return {
@@ -49,9 +49,9 @@ module.exports = function(eventstorenodeclient, gesConnection, logger, events, u
       liveProcessingStarted,
       subscriptionDropped,
       gesConnection: ges,
-      createEventData: eventstorenode.createEventData,
-      createJsonEventData: eventstorenode.createJsonEventData,
-      expectedVersion: eventstorenode.expectedVersion,
+      createEventData: nodeeventstoreclient.createEventData,
+      createJsonEventData: nodeeventstoreclient.createJsonEventData,
+      expectedVersion: nodeeventstoreclient.expectedVersion,
       credentials: credentialsForAllEventsStream,
       commandPoster
     };

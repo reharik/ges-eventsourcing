@@ -1,4 +1,4 @@
-module.exports = function(eventstorenodeclient, logger) {
+module.exports = function(nodeeventstoreclient, logger) {
   return function(_options) {
     let options = _options && _options.eventstore ? _options.eventstore : {};
     let connection;
@@ -6,7 +6,7 @@ module.exports = function(eventstorenodeclient, logger) {
 
     if (!connection) {
       logger.trace('IP:' + options.host + ':1113');
-      connection = eventstorenode.createConnection(
+      connection = nodeeventstoreclient.createConnection(
         {verbose: options.verbose, log: logger},
         { host: options.host, port: 1113 });
       connection.connect();
