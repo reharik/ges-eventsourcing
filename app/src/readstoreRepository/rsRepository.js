@@ -68,7 +68,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
         WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
       }
       let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
-      let sql = `${query};${updateAggSql}`;
+      let sql = `${query || ''};${updateAggSql}`;
       logger.debug(sql);
       let handlerResult = r => _fantasy.Maybe.of(r);
       return pgFuture(sql, handlerResult);
