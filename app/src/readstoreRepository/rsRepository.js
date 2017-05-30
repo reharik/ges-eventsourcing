@@ -59,7 +59,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
 
     saveAggregateView(table, aggregate, document) {
       let query;
-      if (document) {
+      if (document.id) {
         query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')
  ON CONFLICT (id) DO UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}'`;
       }
