@@ -8,7 +8,8 @@
   "scripts": {
     "test": "mocha --require ./app/tests/babelhook --opts ./app/tests/mocha.opts ./app/tests/unitTests/*.js",
     "intTest": "mocha --require ./app/babelhook --opts ./app/tests/mocha.opts ./app/tests/integrationTests/*.js",
-    "lint": "eslint -c ./.eslintrc.json ."
+    "lint": "eslint -c ./.eslintrc.json .",
+    "validate": "npm ls"
   },
   "bugs": {
     "url": "https://github.com/reharik/ges-eventsourcing/issues"
@@ -28,6 +29,7 @@
     "co-queue": "^2.0.0",
     "corelogger": "reharik/core_logger",
     "dagon": "reharik/dagon",
+    "eslint": "^3.19.0",
     "eventstore-node": "^0.0.29",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
@@ -48,6 +50,10 @@
     "gulp-babel": "^5.2.1",
     "mocha": "^2.2.5",
     "mochawait": "^2.0.1",
-    "must": "^0.12.0"
-  }
+    "must": "^0.12.0",
+    "precommit-hook-eslint": "^3.0.0"
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }

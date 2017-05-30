@@ -41,7 +41,11 @@ module.exports = function(nodeeventstoreclient, gesConnection, logger, events, u
         command,
         {eventName: commandName, continuationId, streamType: 'command'},
         commandName);
-      await ges.appendToStream('command', nodeeventstoreclient.expectedVersion.any, [event], credentialsForAllEventsStream);
+      await ges.appendToStream(
+        'command',
+        nodeeventstoreclient.expectedVersion.any,
+        [event],
+        credentialsForAllEventsStream);
     };
 
     return {

@@ -57,9 +57,9 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
       return pgFuture(query, handlerResult);
     },
 
-    saveAggregateView(table, aggregate, document, id) {
+    saveAggregateView(table, aggregate, document) {
       let query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')
- ON CONFLICT (id) DO UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}'`;
+ ON CONFLICT (id) DO UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}'`;
 
       let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
       let sql = `${query};${updateAggSql}`;
@@ -68,9 +68,9 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
       return pgFuture(sql, handlerResult);
     },
 
-    saveSingletonAggregateView(table, singleton, document, id) {
-      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(singleton)}',
- document = '${JSON.stringify(document)}' where id = '${id}'`;
+    saveSingletonAggregateView(table, aggregate, document) {
+      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}',
+ document = '${JSON.stringify(document)}' where id = '${aggregate.id}'`;
 
       logger.debug(query);
       let handlerResult = r => _fantasy.Maybe.of(r);
