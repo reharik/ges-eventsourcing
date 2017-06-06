@@ -27,8 +27,8 @@ module.exports = function(dispatchNotification,
 
     } catch (ex) {
       if (ex.message === 'item has already been processed') { return; }
-      logger.debug(`An exception processing event ${event.eventName} in workflow: ${handlerName} was thrown`);
-      logger.debug(ex);
+      logger.error(`An exception processing event ${event.eventName} in workflow: ${handlerName} was thrown`);
+      logger.error(ex);
 
       // here we need to determin if this is a catastrophic failure, and if so best to throw
       // also need to figure out how to parse the exception to get a usable error
