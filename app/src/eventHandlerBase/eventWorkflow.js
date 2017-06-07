@@ -4,7 +4,7 @@ module.exports = function(dispatchNotification,
                           R,
                           logger) {
 
-  return async function(event, handlerName, hnadlerFunction) {
+  return async function eventWorkflow(event, handlerName, hnadlerFunction) {
     let fh = appfuncs.functionalHelpers;
     try {
       logger.trace(handlerName + ' ' + JSON.stringify(event));
@@ -26,7 +26,7 @@ module.exports = function(dispatchNotification,
       logger.trace(`message ${event.eventName} for ${handlerName} notification disaptched`);
 
     } catch (ex) {
-      console.log(`==========arguments.callee=========`);
+      console.log(`==========arguments.calleeWF=========`);
       console.log(arguments.callee);
       console.log(`==========END arguments.callee=========`);
 
