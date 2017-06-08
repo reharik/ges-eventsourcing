@@ -122,9 +122,6 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
 
         aggregate.clearUncommittedEvents();
       } catch (err) {
-        console.log(`==========arguments.callee=========`);
-        console.log(arguments.callee);
-        console.log(`==========END arguments.callee=========`);
         logger.error(`Error thrown by event repository save`);
         logger.error(err);
         throw err;

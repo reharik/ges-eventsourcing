@@ -26,10 +26,6 @@ module.exports = function(dispatchNotification,
       logger.trace(`message ${event.eventName} for ${handlerName} notification disaptched`);
 
     } catch (ex) {
-      console.log(`==========arguments.calleeWF=========`);
-      console.log(arguments.callee);
-      console.log(`==========END arguments.callee=========`);
-
       if (ex.message === 'item has already been processed') { return; }
       logger.error(`An exception processing event ${event.eventName} in workflow: ${handlerName} was thrown`);
       logger.error(ex);

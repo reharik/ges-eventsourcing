@@ -1,8 +1,3 @@
-/**
- * Created by rharik on 11/23/15.
- */
-
-
 module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
   return {
     getById(id, table) {
@@ -30,15 +25,20 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
     },
 
     save(table, document, id) {
-      let query;
-      if (id) {
-        query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}'`;
-      } else {
-        query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')`;
+      try {
+        let query;
+        if (id) {
+          query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}'`;
+        } else {
+          query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')`;
+        }
+        logger.debug(query);
+        let handlerResult = r => _fantasy.Maybe.of(r);
+        return pgFuture(query, handlerResult);
+      } catch (err) {
+        logger.error(`error saving document: ${JSON.stringify(document)}, table: ${table}, id: ${id}`);
+        logger.error(err);
       }
-      logger.debug(query);
-      let handlerResult = r => _fantasy.Maybe.of(r);
-      return pgFuture(query, handlerResult);
     },
 
     insertAggregateMeta(table, aggregate) {
@@ -61,33 +61,54 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
     },
 
     saveAggregateView(table, aggregate, document) {
-      let query;
-      if (document.id) {
-        query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}';
+      try {
+        let query;
+        if (document.id) {
+          query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}';
         INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${JSON.stringify(document)}'
         WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
+        }
+        let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
+        let sql = `${query || ''};${updateAggSql}`;
+        logger.debug(sql);
+        let handlerResult = r => _fantasy.Maybe.of(r);
+        return pgFuture(sql, handlerResult);
+      } catch (err) {
+        logger.error(`error in saveAggregateView
+ aggregate: ${JSON.stringify(aggregate)},
+ document: ${JSON.stringify(document)},
+ table: ${table}`);
+        logger.error(err);
       }
-      let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
-      let sql = `${query || ''};${updateAggSql}`;
-      logger.debug(sql);
-      let handlerResult = r => _fantasy.Maybe.of(r);
-      return pgFuture(sql, handlerResult);
     },
 
-    saveSingletonAggregateView(table, singleton, document, id) {
-      let query = `UPDATE "${table}" SET meta = '${JSON.stringify(singleton)}',
+    saveSingletonAggregateView(table, aggregate, document, id) {
+      try {
+        let query = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}',
  document = '${JSON.stringify(document)}' where id = '${id}'`;
 
-      logger.debug(query);
-      let handlerResult = r => _fantasy.Maybe.of(r);
-      return pgFuture(query, handlerResult);
+        logger.debug(query);
+        let handlerResult = r => _fantasy.Maybe.of(r);
+        return pgFuture(query, handlerResult);
+      } catch (err) {
+        logger.error(`error in saveSingletonAggregateView document: ${JSON.stringify(document)},
+ aggregate: ${JSON.stringify(aggregate)}
+ table: ${table},
+  id: ${id}`);
+        logger.error(err);
+      }
     },
 
     saveQuery(query) {
-      logger.debug(query);
+      try {
+        logger.debug(query);
 
-      let handlerResult = r => _fantasy.Maybe.of(r);
-      return pgFuture(query, handlerResult);
+        let handlerResult = r => _fantasy.Maybe.of(r);
+        return pgFuture(query, handlerResult);
+      } catch (err) {
+        logger.error(`error in savingQuery query: ${query}`);
+        logger.error(err);
+      }
     },
 
     query(query) {
