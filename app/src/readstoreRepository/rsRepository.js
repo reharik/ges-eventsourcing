@@ -1,30 +1,27 @@
-module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
+module.exports = function(pgasync, uuid, logger) {
   return {
-    getById(id, table) {
+    async getById(id, table) {
       let query = (`SELECT * from "${table}" where "id" = '${id}'`);
       logger.debug(query);
-      let handlerResult = x => {
-        const row = x.rows[0];
-        return row && row.document ? row.document : {};
-      };
 
-      // var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
-      return pgFuture(query, handlerResult);
+      return await pgasync.query(query)
+        .then(result => {
+        const row = result.rows[0];
+        return row && row.document ? row.document : {};
+      });
     },
 
-    getByIds(ids, table) {
+    async getByIds(ids, table) {
       let query = (`SELECT * from "${table}" where "id" in '(${ids.split(',')})'`);
       logger.debug(query);
-      let handlerResult = x => {
-        const row = x.rows[0];
+      return await pgasync.query(query)
+        .then(result => {
+        const row = result.rows[0];
         return row && row.document ? row.document : {};
-      };
-
-      // var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
-      return pgFuture(query, handlerResult);
+      });
     },
 
-    save(table, document, id) {
+    async save(table, document, id) {
       try {
         let query;
         if (id) {
@@ -33,34 +30,30 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
           query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')`;
         }
         logger.debug(query);
-        let handlerResult = r => _fantasy.Maybe.of(r);
-        return pgFuture(query, handlerResult);
+        return await pgasync.query(query)
       } catch (err) {
         logger.error(`error saving document: ${JSON.stringify(document)}, table: ${table}, id: ${id}`);
         logger.error(err);
       }
     },
 
-    insertAggregateMeta(table, aggregate) {
+    async insertAggregateMeta(table, aggregate) {
       let query = `INSERT INTO "${table}" ("id", "meta") VALUES ('${aggregate.id}','${JSON.stringify(aggregate)}')`;
       logger.debug(query);
-      let handlerResult = r => _fantasy.Maybe.of(r);
-      return pgFuture(query, handlerResult);
+      return await pgasync.query(query)
     },
 
-    getAggregateViewMeta(table, id) {
+    async getAggregateViewMeta(table, id) {
       let query = (`SELECT * from "${table}" where "id" = '${id}'`);
       logger.debug(query);
-      let handlerResult = x => {
-        const row = x.rows[0];
-        return row && row.meta ? row.meta : {};
-      };
-
-      // var handlerResult = R.compose(R.chain(fh.safeProp('document')), fh.safeProp('rows'));
-      return pgFuture(query, handlerResult);
+      return await pgasync.query(query)
+        .then(result => {
+          const row = result.rows[0];
+          return row && row.meta ? row.meta: {};
+        });
     },
 
-    saveAggregateView(table, aggregate, document) {
+    async saveAggregateView(table, aggregate, document) {
       try {
         let query;
         if (document.id) {
@@ -71,8 +64,7 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
         let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
         let sql = `${query || ''};${updateAggSql}`;
         logger.debug(sql);
-        let handlerResult = r => _fantasy.Maybe.of(r);
-        return pgFuture(sql, handlerResult);
+        return await pgasync.query(query)
       } catch (err) {
         logger.error(`error in saveAggregateView
  aggregate: ${JSON.stringify(aggregate)},
@@ -82,14 +74,13 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
       }
     },
 
-    saveSingletonAggregateView(table, aggregate, document, id) {
+    async saveSingletonAggregateView(table, aggregate, document, id) {
       try {
         let query = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}',
  document = '${JSON.stringify(document)}' where id = '${id}'`;
 
         logger.debug(query);
-        let handlerResult = r => _fantasy.Maybe.of(r);
-        return pgFuture(query, handlerResult);
+        return await pgasync.query(query)
       } catch (err) {
         logger.error(`error in saveSingletonAggregateView document: ${JSON.stringify(document)},
  aggregate: ${JSON.stringify(aggregate)}
@@ -99,25 +90,25 @@ module.exports = function(R, _fantasy, appfuncs, uuid, logger, pgFuture) {
       }
     },
 
-    saveQuery(query) {
+    async saveQuery(query) {
       try {
         logger.debug(query);
 
-        let handlerResult = r => _fantasy.Maybe.of(r);
-        return pgFuture(query, handlerResult);
+        return await pgasync.query(query)
+
       } catch (err) {
         logger.error(`error in savingQuery query: ${query}`);
         logger.error(err);
       }
     },
 
-    query(query) {
+    async query(query) {
       logger.debug(query);
-      let fh = appfuncs.functionalHelpers;
-
-      // need to return proper element.  rows is an array of objects with id and document
-      let handlerResult = R.compose(R.map(fh.getSafeValue('document')), fh.getSafeValue('rows'));
-      return pgFuture(query, handlerResult);
+      return await pgasync.query(query)
+        .then(result => {
+          const row = result.rows[0];
+          return row && row.meta ? row.meta: {};
+        });
     }
   };
 };
