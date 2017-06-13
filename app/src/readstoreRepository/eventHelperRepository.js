@@ -1,15 +1,11 @@
-module.exports = function(pgasync, uuid, logger) {
+module.exports = function(pgasync, config, uuid, logger) {
+  const pg = new pgasync.default(config.postgres.config);
 
   return {
     async checkIdempotency(commitPosition, eventHandlerName) {
       let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
       logger.debug(query);
-console.log(`==========pgasync=========`);
-      console.log(pgasync);
-      console.log(JSON.stringify(pgasync));
-console.log(`==========END pgasync=========`);
-
-      return await pgasync.query(query)
+      return await pg.query(query)
         .then(response => {
           const row = response.rows[0];
           const rowPosition = row && row.commitPosition ? row.commitPosition : -1;
@@ -34,7 +30,7 @@ console.log(`==========END pgasync=========`);
  SELECT '${uuid.v4() }' , '${commitPosition}', '${eventHandlerName }'
 WHERE NOT EXISTS ( SELECT 1 from "lastProcessedPosition" where "handlerType" = '${eventHandlerName}')`;
 
-      return await pgasync.query(query);
+      return await pg.query(query);
 
     }
   };
