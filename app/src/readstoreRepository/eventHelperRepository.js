@@ -1,26 +1,26 @@
-module.exports = function(pgasync, config, uuid, logger) {
-  const pg = new pgasync.default(config.postgres.config);
-
-  return {
-    async checkIdempotency(commitPosition, eventHandlerName) {
-      let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
-      logger.debug(query);
-      return await pg.query(query)
-        .then(response => {
-          const row = response.rows[0];
-          const rowPosition = row && row.commitPosition ? row.commitPosition : -1;
-          logger.debug(`event commit possition ${commitPosition}. 
+module.exports = function(pgasync, uuid, logger) {
+  return function(config) {
+    const pg = new pgasync.default(config);
+    return {
+      async checkIdempotency(commitPosition, eventHandlerName) {
+        let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
+        logger.debug(query);
+        return await pg.query(query)
+          .then(response => {
+            const row = response.rows[0];
+            const rowPosition = row && row.commitPosition ? row.commitPosition : -1;
+            logger.debug(`event commit possition ${commitPosition}. 
                     db commit possition ${rowPosition}.`);
-          let idempotent = parseInt(commitPosition) > parseInt(rowPosition);
-          let result = {isIdempotent: idempotent};
-          logger.debug(result);
-          return result;
-        });
-    },
+            let idempotent = parseInt(commitPosition) > parseInt(rowPosition);
+            let result = {isIdempotent: idempotent};
+            logger.debug(result);
+            return result;
+          });
+      },
 
-    async recordEventProcessed(commitPosition, eventHandlerName) {
+      async recordEventProcessed(commitPosition, eventHandlerName) {
 
-      let query = `WITH UPSERT AS (
+        let query = `WITH UPSERT AS (
  UPDATE "lastProcessedPosition"
  SET "commitPosition" = '${commitPosition}',
   "handlerType" =  '${eventHandlerName}'
@@ -30,8 +30,9 @@ module.exports = function(pgasync, config, uuid, logger) {
  SELECT '${uuid.v4() }' , '${commitPosition}', '${eventHandlerName }'
 WHERE NOT EXISTS ( SELECT 1 from "lastProcessedPosition" where "handlerType" = '${eventHandlerName}')`;
 
-      return await pg.query(query);
+        return await pg.query(query);
 
-    }
+      }
+    };
   };
 };
