@@ -8,7 +8,18 @@ module.exports = function(dispatchNotification,
     let fh = appfuncs.functionalHelpers;
 
     const processMessage = async (hnadlerFunction, event, continuationId) => {
-      return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+      let attempt = 0;
+      try {
+        return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+      } catch (err) {
+        attempt++;
+        if (attempt < 3 && err.message.includes('expected version')) {
+          logger.info(err.message);
+          logger.info(`retry attempt: ${attempt}`);
+          return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+        }
+        throw err;
+      }
     };
 
     try {
