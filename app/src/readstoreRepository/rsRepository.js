@@ -109,8 +109,7 @@ module.exports = function(pgasync, uuid, logger) {
         logger.debug(query);
         return await pg.query(query)
           .then(result => {
-            const row = result.rows[0];
-            return row && row.document ? row.document : {};
+            return result.rows.map(x => x.document || {});
           });
       }
     };
