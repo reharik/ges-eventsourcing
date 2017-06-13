@@ -6,6 +6,11 @@ module.exports = function(dispatchNotification,
 
   return async function eventWorkflow(event, handlerName, hnadlerFunction) {
     let fh = appfuncs.functionalHelpers;
+
+    const processMessage = async (hnadlerFunction, event, continuationId) => {
+      return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+    };
+
     try {
       logger.trace(handlerName + ' ' + JSON.stringify(event));
       const isIdempotent = await eventHelperRepository
@@ -16,7 +21,7 @@ module.exports = function(dispatchNotification,
       }
 
       let continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
-      let handlerResult = await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+      const handlerResult = processMessage(hnadlerFunction, event, continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
 
       await eventHelperRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);

@@ -5,13 +5,13 @@ module.exports = function(pgasync, uuid, logger) {
       let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
       logger.debug(query);
       return await pgasync.query(query)
-        .then(result => {
-          const row = result.rows[0];
+        .then(response => {
+          const row = response.rows[0];
           const rowPosition = row && row.commitPosition ? row.commitPosition : -1;
           logger.debug(`event commit possition ${commitPosition}. 
                     db commit possition ${rowPosition}.`);
           let idempotent = parseInt(commitPosition) > parseInt(rowPosition);
-            let result = {isIdempotent: idempotent};
+          let result = {isIdempotent: idempotent};
           logger.debug(result);
           return result;
         });
@@ -29,7 +29,7 @@ module.exports = function(pgasync, uuid, logger) {
  SELECT '${uuid.v4() }' , '${commitPosition}', '${eventHandlerName }'
 WHERE NOT EXISTS ( SELECT 1 from "lastProcessedPosition" where "handlerType" = '${eventHandlerName}')`;
 
-      return await pgasync.query(query)
+      return await pgasync.query(query);
 
     }
   };

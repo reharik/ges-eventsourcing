@@ -6,9 +6,9 @@ module.exports = function(pgasync, uuid, logger) {
 
       return await pgasync.query(query)
         .then(result => {
-        const row = result.rows[0];
-        return row && row.document ? row.document : {};
-      });
+          const row = result.rows[0];
+          return row && row.document ? row.document : {};
+        });
     },
 
     async getByIds(ids, table) {
@@ -16,9 +16,9 @@ module.exports = function(pgasync, uuid, logger) {
       logger.debug(query);
       return await pgasync.query(query)
         .then(result => {
-        const row = result.rows[0];
-        return row && row.document ? row.document : {};
-      });
+          const row = result.rows[0];
+          return row && row.document ? row.document : {};
+        });
     },
 
     async save(table, document, id) {
@@ -30,7 +30,7 @@ module.exports = function(pgasync, uuid, logger) {
           query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')`;
         }
         logger.debug(query);
-        return await pgasync.query(query)
+        return await pgasync.query(query);
       } catch (err) {
         logger.error(`error saving document: ${JSON.stringify(document)}, table: ${table}, id: ${id}`);
         logger.error(err);
@@ -40,7 +40,7 @@ module.exports = function(pgasync, uuid, logger) {
     async insertAggregateMeta(table, aggregate) {
       let query = `INSERT INTO "${table}" ("id", "meta") VALUES ('${aggregate.id}','${JSON.stringify(aggregate)}')`;
       logger.debug(query);
-      return await pgasync.query(query)
+      return await pgasync.query(query);
     },
 
     async getAggregateViewMeta(table, id) {
@@ -49,7 +49,7 @@ module.exports = function(pgasync, uuid, logger) {
       return await pgasync.query(query)
         .then(result => {
           const row = result.rows[0];
-          return row && row.meta ? row.meta: {};
+          return row && row.meta ? row.meta : {};
         });
     },
 
@@ -64,7 +64,7 @@ module.exports = function(pgasync, uuid, logger) {
         let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
         let sql = `${query || ''};${updateAggSql}`;
         logger.debug(sql);
-        return await pgasync.query(query)
+        return await pgasync.query(query);
       } catch (err) {
         logger.error(`error in saveAggregateView
  aggregate: ${JSON.stringify(aggregate)},
@@ -80,7 +80,7 @@ module.exports = function(pgasync, uuid, logger) {
  document = '${JSON.stringify(document)}' where id = '${id}'`;
 
         logger.debug(query);
-        return await pgasync.query(query)
+        return await pgasync.query(query);
       } catch (err) {
         logger.error(`error in saveSingletonAggregateView document: ${JSON.stringify(document)},
  aggregate: ${JSON.stringify(aggregate)}
@@ -94,7 +94,7 @@ module.exports = function(pgasync, uuid, logger) {
       try {
         logger.debug(query);
 
-        return await pgasync.query(query)
+        return await pgasync.query(query);
 
       } catch (err) {
         logger.error(`error in savingQuery query: ${query}`);
@@ -107,7 +107,7 @@ module.exports = function(pgasync, uuid, logger) {
       return await pgasync.query(query)
         .then(result => {
           const row = result.rows[0];
-          return row && row.meta ? row.meta: {};
+          return row && row.meta ? row.meta : {};
         });
     }
   };
