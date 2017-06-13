@@ -4,6 +4,11 @@ module.exports = function(pgasync, uuid, logger) {
     async checkIdempotency(commitPosition, eventHandlerName) {
       let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
       logger.debug(query);
+console.log(`==========pgasync=========`);
+      console.log(pgasync);
+      console.log(JSON.stringify(pgasync));
+console.log(`==========END pgasync=========`);
+
       return await pgasync.query(query)
         .then(response => {
           const row = response.rows[0];
