@@ -20,7 +20,7 @@ module.exports = function(dispatchNotification,
         if (retry < 4 && err.message.includes('WrongExpectedVersion')) {
           logger.info(err.message);
           logger.info(`retry attempt: ${retry}`);
-          return await hnadlerFunction(fh.getSafeValue('data', event), continuationId, retry);
+          return await processMessage(hnadlerFunction, event, continuationId, retry);
         }
         throw err;
       }
