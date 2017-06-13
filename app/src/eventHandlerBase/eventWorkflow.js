@@ -8,11 +8,6 @@ module.exports = function(dispatchNotification,
     let fh = appfuncs.functionalHelpers;
 
     const processMessage = async (hnadlerFunction, event, continuationId, retry = 0) => {
-      console.log(`==========event=========`);
-      console.log(retry);
-      console.log(event);
-      console.log(`==========END event=========`);
-
       try {
         return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
       } catch (err) {

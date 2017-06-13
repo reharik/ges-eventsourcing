@@ -1,6 +1,5 @@
-module.exports = function(pgasync, uuid, logger) {
-  return function(config) {
-    const pg = new pgasync.default(config);
+module.exports = function(uuid, logger) {
+  return function(pg) {
     return {
       async checkIdempotency(commitPosition, eventHandlerName) {
         let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
