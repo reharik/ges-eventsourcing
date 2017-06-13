@@ -1,5 +1,5 @@
 module.exports = function(dispatchNotification,
-                          eventHelperRepository,
+                          rsRepository,
                           appfuncs,
                           R,
                           logger) {
@@ -23,7 +23,7 @@ module.exports = function(dispatchNotification,
 
     try {
       logger.trace(handlerName + ' ' + JSON.stringify(event));
-      const isIdempotent = await eventHelperRepository
+      const isIdempotent = await rsRepository
         .checkIdempotency(fh.getSafeValue('commitPosition', event), handlerName);
       logger.trace(`message ${event.eventName} for ${handlerName} isIdempotent ${JSON.stringify(isIdempotent)}`);
       if (!isIdempotent.isIdempotent) {
@@ -34,7 +34,7 @@ module.exports = function(dispatchNotification,
       const handlerResult = processMessage(hnadlerFunction, event, continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
 
-      await eventHelperRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
+      await rsRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
       logger.trace('message for ' + handlerName + ' recorded as processed ' + event.eventName);
 
       await dispatchNotification('Success', event, handlerResult);
