@@ -7,16 +7,20 @@ module.exports = function(dispatchNotification,
   return async function eventWorkflow(event, handlerName, hnadlerFunction) {
     let fh = appfuncs.functionalHelpers;
 
-    const processMessage = async (hnadlerFunction, event, continuationId) => {
-      let attempt = 0;
+    const processMessage = async (hnadlerFunction, event, continuationId, retry = 0) => {
+      console.log(`==========event=========`);
+      console.log(retry);
+      console.log(event);
+      console.log(`==========END event=========`);
+
       try {
         return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
       } catch (err) {
-        attempt++;
-        if (attempt < 3 && err.message.includes('WrongExpectedVersion')) {
+        retry++;
+        if (retry < 4 && err.message.includes('WrongExpectedVersion')) {
           logger.info(err.message);
-          logger.info(`retry attempt: ${attempt}`);
-          return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+          logger.info(`retry attempt: ${retry}`);
+          return await hnadlerFunction(fh.getSafeValue('data', event), continuationId, retry);
         }
         throw err;
       }
