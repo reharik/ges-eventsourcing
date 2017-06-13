@@ -110,7 +110,7 @@ module.exports = function(pgasync, uuid, logger) {
         return await pg.query(query)
           .then(result => {
             const row = result.rows[0];
-            return row && row.meta ? row.meta : {};
+            return row && row.document ? row.document : {};
           });
       }
     };
