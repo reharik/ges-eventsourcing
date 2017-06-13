@@ -13,7 +13,7 @@ module.exports = function(dispatchNotification,
         return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
       } catch (err) {
         attempt++;
-        if (attempt < 3 && err.message.includes('expected version')) {
+        if (attempt < 3 && err.message.includes('WrongExpectedVersion')) {
           logger.info(err.message);
           logger.info(`retry attempt: ${attempt}`);
           return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
