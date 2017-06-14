@@ -28,14 +28,13 @@ module.exports = function(uuid, logger) {
           let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
           let sql = `${query || ''}${updateAggSql}`;
           logger.debug(sql);
-          return await pg.query(query);
+          return await pg.query(sql);
         } catch (err) {
           logger.error(`error in saveAggregateView
  aggregate: ${JSON.stringify(aggregate)},
  document: ${JSON.stringify(document)},
  table: ${table}`);
           logger.error(err);
-          logger.error(err.stack);
         }
       },
 
