@@ -3,7 +3,7 @@ module.exports = function(pgasync,
                           eventHelperRepository,
                           standardRepository) {
   return function(config) {
-    const pg = new pgasync(config);
+    const pg = new pgasync.default(config);
     return Object.assign(
       {},
       aggregateRepository(pg),
