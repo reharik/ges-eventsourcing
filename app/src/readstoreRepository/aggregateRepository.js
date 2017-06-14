@@ -35,6 +35,7 @@ module.exports = function(uuid, logger) {
  document: ${JSON.stringify(document)},
  table: ${table}`);
           logger.error(err);
+          logger.error(err.stack);
         }
       },
 
