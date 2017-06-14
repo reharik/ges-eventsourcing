@@ -54,7 +54,7 @@ module.exports = function(uuid, logger) {
         logger.debug(query);
         return await pg.query(query)
           .then(result => {
-            return result.rows.map(x => x.document || {});
+            return result.rows.map(x => x.document || []);
           });
       }
     };
