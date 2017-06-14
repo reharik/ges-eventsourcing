@@ -26,7 +26,7 @@ module.exports = function(uuid, logger) {
         WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
           }
           let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
-          let sql = `${query || ''};${updateAggSql}`;
+          let sql = `${query || ''}${updateAggSql}`;
           logger.debug(sql);
           return await pg.query(query);
         } catch (err) {
