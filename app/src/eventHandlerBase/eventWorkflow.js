@@ -31,11 +31,11 @@ module.exports = function(dispatchNotification,
       }
 
       let continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
-      const handlerResult = processMessage(hnadlerFunction, event, continuationId);
+      const handlerResult = await processMessage(hnadlerFunction, event, continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
 
       await rsRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
-      logger.trace('message for ' + handlerName + ' recorded as processed ' + event.eventName);
+      logger.trace(`message ${event.eventName} for ${handlerName} recorded as processed`);
 
       await dispatchNotification('Success', event, handlerResult);
       logger.trace(`message ${event.eventName} for ${handlerName} notification disaptched`);
