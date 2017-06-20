@@ -24,12 +24,9 @@ module.exports = function(uuid, logger) {
 
       async save(table, document, id) {
         try {
-          let query;
-          if (id) {
-            query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}'`;
-          } else {
-            query = `INSERT INTO "${table}" ("id", "document") VALUES ('${document.id}','${JSON.stringify(document)}')`;
-          }
+          let query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}';
+        INSERT INTO "${table}" ("id", "document") SELECT '${id}','${JSON.stringify(document)}'
+        WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${id}');`;
           logger.debug(query);
           return await pg.query(query);
         } catch (err) {
