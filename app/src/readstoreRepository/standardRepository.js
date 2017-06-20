@@ -22,15 +22,15 @@ module.exports = function(uuid, logger) {
           });
       },
 
-      async save(table, document, id) {
+      async save(table, document) {
         try {
-          let query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${id}';
-        INSERT INTO "${table}" ("id", "document") SELECT '${id}','${JSON.stringify(document)}'
-        WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${id}');`;
+          let query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}';
+        INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${JSON.stringify(document)}'
+        WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
           logger.debug(query);
           return await pg.query(query);
         } catch (err) {
-          logger.error(`error saving document: ${JSON.stringify(document)}, table: ${table}, id: ${id}`);
+          logger.error(`error saving document: ${JSON.stringify(document)}, table: ${table}, id: ${document.id}`);
           logger.error(err);
         }
       },
