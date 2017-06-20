@@ -27,7 +27,6 @@ module.exports = function(uuid, logger) {
           let query = `INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${JSON.stringify(document)}'
         ON CONFLICT (id)
         DO
-        UPDATE
         UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}'`;
           logger.debug(query);
           return await pg.query(query);
