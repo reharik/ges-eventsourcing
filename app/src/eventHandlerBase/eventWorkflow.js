@@ -1,14 +1,29 @@
 module.exports = function(dispatchNotification,
-                          eventHelperRepository,
+                          rsRepository,
                           appfuncs,
                           R,
                           logger) {
 
   return async function eventWorkflow(event, handlerName, hnadlerFunction) {
     let fh = appfuncs.functionalHelpers;
+
+    const processMessage = async (hnadlerFunction, event, continuationId, retry = 0) => {
+      try {
+        return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+      } catch (err) {
+        retry++;
+        if (retry < 4 && err.message.includes('WrongExpectedVersion')) {
+          logger.info(err.message);
+          logger.info(`retry attempt: ${retry}`);
+          return await processMessage(hnadlerFunction, event, continuationId, retry);
+        }
+        throw err;
+      }
+    };
+
     try {
       logger.trace(handlerName + ' ' + JSON.stringify(event));
-      const isIdempotent = await eventHelperRepository
+      const isIdempotent = await rsRepository
         .checkIdempotency(fh.getSafeValue('commitPosition', event), handlerName);
       logger.trace(`message ${event.eventName} for ${handlerName} isIdempotent ${JSON.stringify(isIdempotent)}`);
       if (!isIdempotent.isIdempotent) {
@@ -16,11 +31,11 @@ module.exports = function(dispatchNotification,
       }
 
       let continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
-      let handlerResult = await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+      const handlerResult = await processMessage(hnadlerFunction, event, continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
 
-      await eventHelperRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
-      logger.trace('message for ' + handlerName + ' recorded as processed ' + event.eventName);
+      await rsRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
+      logger.trace(`message ${event.eventName} for ${handlerName} recorded as processed`);
 
       await dispatchNotification('Success', event, handlerResult);
       logger.trace(`message ${event.eventName} for ${handlerName} notification disaptched`);
