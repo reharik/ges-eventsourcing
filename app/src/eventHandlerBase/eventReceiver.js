@@ -5,8 +5,11 @@ module.exports = function(eventWorkflow, concurrentqueue) {
     const processor = x => {
       const func = handler[x.eventName];
       if (func) {
-        console.log('process event');
-        return eventWorkflow(x, handler.handlerName, func.bind(handler));
+        console.log(`process ${x.eventName}`);
+        const result = eventWorkflow(x, handler.handlerName, func.bind(handler));
+        console.log(`result for ${x.eventName}`);
+        console.log(result);
+        return result;
       }
       return Promise.resolve();
     };
