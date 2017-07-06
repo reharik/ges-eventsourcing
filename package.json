@@ -25,11 +25,9 @@
     "JSON": "^1.0.0",
     "bluebird": "^3.4.1",
     "buffer": "^3.4.2",
-    "co": "^4.6.0",
-    "co-queue": "^2.0.0",
+    "concurrent-queue": "^7.0.1",
     "corelogger": "reharik/core_logger",
     "dagon": "reharik/dagon",
-    "eslint": "^3.19.0",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
     "is-object-empty": "^1.0.0",
@@ -43,12 +41,8 @@
     "uuid": "^2.0.1"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
-    "del": "^1.2.0",
-    "gulp": "^3.9.0",
-    "gulp-babel": "^5.2.1",
+    "eslint": "^3.19.0",
     "mocha": "^2.2.5",
-    "mochawait": "^2.0.1",
     "must": "^0.12.0",
     "precommit-hook-eslint": "^3.0.0"
   },

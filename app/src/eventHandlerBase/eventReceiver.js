@@ -1,11 +1,17 @@
-module.exports = function(eventWorkflow) {
+module.exports = function(eventWorkflow, concurrentqueue) {
 
   return function(source, handler) {
-    source.subscribe(async function(x) {
+
+    const processor = x => {
       const func = handler[x.eventName];
       if (func) {
-        await eventWorkflow(x, handler.handlerName, func.bind(handler));
+        return eventWorkflow(x, handler.handlerName, func.bind(handler));
       }
-    });
+      return Promise.resolve();
+    };
+
+    const queue = concurrentqueue().limit({ concurrency: 1 }).process(processor);
+
+    source.subscribe(x => queue.queue(x));
   };
 };
