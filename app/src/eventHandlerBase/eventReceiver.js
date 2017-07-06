@@ -12,6 +12,6 @@ module.exports = function(eventWorkflow, concurrentqueue) {
 
     const queue = concurrentqueue().limit({ concurrency: 1 }).process(processor);
 
-    source.subscribe(x => queue.queue(x));
+    source.subscribe(x => queue(x));
   };
 };
