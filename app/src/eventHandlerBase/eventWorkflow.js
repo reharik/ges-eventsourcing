@@ -22,6 +22,7 @@ module.exports = function(dispatchNotification,
     };
 
     try {
+      logger.debug(`handling ${event.eventName} event in ${handlerName}`);
       logger.trace(handlerName + ' ' + JSON.stringify(event));
       const isIdempotent = await rsRepository
         .checkIdempotency(fh.getSafeValue('commitPosition', event), handlerName);
