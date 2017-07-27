@@ -1,8 +1,14 @@
 module.exports = function(uuid, logger) {
   return function(pg) {
     return {
+      sanitizeDocument(name) {
+        let _name = JSON.stringify(name).replace(/'/g, "\\'");
+        return _name.trim();
+      },
+
       async insertAggregateMeta(table, aggregate) {
-        let query = `INSERT INTO "${table}" ("id", "meta") VALUES ('${aggregate.id}','${JSON.stringify(aggregate)}')`;
+        let query = `INSERT INTO "${table}" ("id", "meta") 
+          VALUES ('${aggregate.id}','${this.sanitizeDocument(aggregate)}')`;
         logger.debug(query);
         return await pg.query(query);
       },
@@ -21,18 +27,19 @@ module.exports = function(uuid, logger) {
         try {
           let query;
           if (document.id) {
-            query = `UPDATE "${table}" SET document = '${JSON.stringify(document)}' where id = '${document.id}';
-        INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${JSON.stringify(document)}'
+            query = `UPDATE "${table}" SET document = '${this.sanitizeDocument(document)}' where id = '${document.id}';
+        INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${this.sanitizeDocument(document)}'
         WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
           }
-          let updateAggSql = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}' where id = '${aggregate.id}'`;
+          let updateAggSql = `UPDATE "${table}" SET meta = '${this.sanitizeDocument(aggregate)}'
+            where id = '${aggregate.id}'`;
           let sql = `${query || ''}${updateAggSql}`;
           logger.debug(sql);
           return await pg.query(sql);
         } catch (err) {
           logger.error(`error in saveAggregateView
- aggregate: ${JSON.stringify(aggregate)},
- document: ${JSON.stringify(document)},
+ aggregate: ${this.sanitizeDocument(aggregate)},
+ document: ${this.sanitizeDocument(document)},
  table: ${table}`);
           logger.error(err);
         }
@@ -40,14 +47,14 @@ module.exports = function(uuid, logger) {
 
       async saveSingletonAggregateView(table, aggregate, document, id) {
         try {
-          let query = `UPDATE "${table}" SET meta = '${JSON.stringify(aggregate)}',
- document = '${JSON.stringify(document)}' where id = '${id}'`;
+          let query = `UPDATE "${table}" SET meta = '${this.sanitizeDocument(aggregate)}',
+ document = '${this.sanitizeDocument(document)}' where id = '${id}'`;
 
           logger.debug(query);
           return await pg.query(query);
         } catch (err) {
-          logger.error(`error in saveSingletonAggregateView document: ${JSON.stringify(document)},
- aggregate: ${JSON.stringify(aggregate)}
+          logger.error(`error in saveSingletonAggregateView document: ${this.sanitizeDocument(document)},
+ aggregate: ${this.sanitizeDocument(aggregate)}
  table: ${table},
   id: ${id}`);
           logger.error(err);
