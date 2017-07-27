@@ -2,7 +2,7 @@ module.exports = function(uuid, logger) {
   return function(pg) {
     return {
       sanitizeDocument(name) {
-        let _name = JSON.stringify(name).replace(/'/g, "\\'");
+        let _name = JSON.stringify(name).replace(/'/g, "''");
         return _name.trim();
       },
 
