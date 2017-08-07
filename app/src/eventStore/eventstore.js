@@ -29,6 +29,7 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
     };
 
     let ges = eventstoreConnection(configs);
+
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
       command.createDate = new Date();
@@ -37,7 +38,8 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
         command,
         {eventName: commandName, continuationId, streamType: 'command'},
         commandName);
-      await ges.appendToStream(
+      const connection = await ges;
+      await connection.appendToStream(
         'command',
         nodeeventstoreclient.expectedVersion.any,
         [event],
