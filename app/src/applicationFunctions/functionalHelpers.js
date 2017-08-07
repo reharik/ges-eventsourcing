@@ -2,7 +2,7 @@
  * Created by rharik on 11/1/15.
  */
 
-module.exports = function(R, _fantasy, buffer, Promise, logger) {
+module.exports = function(R, _fantasy, buffer, logger) {
   let Maybe = _fantasy.Maybe;
 
   _fantasy.Future.prototype.then = function(res) {
