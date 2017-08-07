@@ -3,13 +3,14 @@ let eventDispatcher = function eventDispatcher(eventstore,
                                                rx,
                                                R,
                                                mapAndFilterStream) {
-  return function() {
+  return async function() {
+    let connection = await eventstore.gesConnection;
     return {
       startDispatching(streamType) {
         logger.info('startDispatching | startDispatching called');
         const eventAppeared = eventstore.eventEmitterInstance();
         let mAndF = mapAndFilterStream(streamType);
-        let subscription = eventstore.gesConnection.subscribeToAllFrom(
+        let subscription = connection.subscribeToAllFrom(
           null,
           false,
           eventAppeared.emitEvent,

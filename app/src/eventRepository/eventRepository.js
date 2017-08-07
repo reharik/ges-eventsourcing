@@ -38,25 +38,15 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         // this might be problematic
         aggregate = new aggregateType();
 
-
-        // for (let i = 0; i < docs.length; i++) {
-        //   let doc = docs[i];
-        //   await db.post(doc);
-        // }
-
-
         do {
           // specify number of events to pull. if number of events too large for one call use limit
 
-          // sliceCount = sliceStart + options.readPageSize
-          // <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
           // get all events, or first batch of events from GES
-
-          currentSlice = await eventstore.gesConnection.readStreamEventsForward(streamName,
+          const connection = await eventstore.gesConnection;
+          currentSlice = await connection.readStreamEventsForward(streamName,
             sliceStart,
             options.readPageSize,
             eventstore.credentials);
-
           //validate
           if (currentSlice.status === 'StreamNotFound') {
             throw new Error('Aggregate not found: ' + streamName);
@@ -117,8 +107,8 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         events = newEvents.map(e=>
           eventstore.createJsonEventData(uuid.v4(), e, metadata, e.eventName || '')
         );
-
-        await eventstore.gesConnection.appendToStream(streamName, originalVersion, events, eventstore.credentials);
+        const connection = await eventstore.gesConnection;
+        await connection.appendToStream(streamName, originalVersion, events, eventstore.credentials);
 
         aggregate.clearUncommittedEvents();
       } catch (err) {

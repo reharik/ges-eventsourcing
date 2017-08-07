@@ -1,28 +1,40 @@
 module.exports = function(nodeeventstoreclient, promiseretry, logger) {
-  var ping = async function(options) {
-    const _connection = nodeeventstoreclient.createConnection(
-      { verbose: options.verbose, log: logger },
-      { host: options.host, port: 1113 });
-    const connection = await _connection.connect();
+  let connection;
+  const ping = async function(options) {
+    if (!connection) {
+      connection = nodeeventstoreclient.createConnection(
+        {verbose: options.verbose, log: logger},
+        {host: options.host, port: 1113});
+    }
+    if (connection._handler._state === 'init') {
+      await connection.connect();
+    }
 
-    connection.once('connected', tcpEndPoint => {
-      logger.debug('gesConnection: ' + connection + ' - ' + tcpEndPoint);
-    })
-    ;
-    connection.on('error', function(err) {
-      logger.error('Error occurred on ES connection:', err);
-    });
+    if (connection._handler._state === 'connected') {
 
-    connection.on('closed', function(reason) {
-      logger.info('ES connection closed, reason:', reason);
-      connection.connect();
-    });
-    return connection;
+      connection.once('connected', tcpEndPoint => {
+        logger.debug('gesConnection: ' + connection + ' - ' + tcpEndPoint);
+      })
+      ;
+      connection.on('error', function(err) {
+        logger.error('Error occurred on ES connection:', err);
+      });
+
+      connection.on('closed', function(reason) {
+        logger.info('ES connection closed, reason:', reason);
+        connection.connect();
+      });
+      console.log(`=========='connected'=========`);
+      console.log('connected to eventstore');
+      console.log(`==========END 'connected'=========`);
+      return connection;
+    }
+    return Promise.reject();
   };
-  return () => {
+  return options => {
     return promiseretry(function(retry, number) {
-      console.log('attempt number', number);
-      return ping().catch(retry);
-    }, { retries: 10 });
+      console.log('es connect attempt number', number);
+      return ping(options).catch(retry);
+    }, {retries: 10});
   };
 };

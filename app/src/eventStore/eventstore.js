@@ -1,7 +1,7 @@
 
 
 module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, events, uuid) {
-  return async function eventstore(options) {
+  const result = function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream =
       new nodeeventstoreclient.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
@@ -28,8 +28,7 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
       logger.info('Subscription dropped.');
     };
 
-    let ges = await eventstoreConnection(configs);
-
+    let ges = eventstoreConnection(configs);
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
       command.createDate = new Date();
@@ -57,4 +56,5 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
       commandPoster
     };
   };
+  return result;
 };

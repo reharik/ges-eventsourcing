@@ -2,23 +2,24 @@ module.exports = function(dispatchNotification,
                           rsRepository,
                           appfuncs,
                           R,
+                          promiseretry,
                           logger) {
 
   return async function eventWorkflow(event, handlerName, hnadlerFunction) {
     let fh = appfuncs.functionalHelpers;
 
-    const processMessage = async (hnadlerFunction, event, continuationId, retry = 0) => {
-      try {
-        return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
-      } catch (err) {
-        retry++;
-        if (retry < 4 && err.message.includes('WrongExpectedVersion')) {
+    const processMessage = async (hnadlerFunction, event, continuationId) => {
+      return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+    };
+
+    const attemptProcessMessage = (hnadlerFunction, event, continuationId) => {
+      return promiseretry(function(retry, number) {
+        if (number > 1) { logger.info(`retry attempt: ${number - 1}`); }
+        return processMessage(hnadlerFunction, event, continuationId).catch(err => {
           logger.info(err.message);
-          logger.info(`retry attempt: ${retry}`);
-          return await processMessage(hnadlerFunction, event, continuationId, retry);
-        }
-        throw err;
-      }
+          retry(err);
+        });
+      }, { retries: 3, factor: 1 });
     };
 
     try {
@@ -32,11 +33,11 @@ module.exports = function(dispatchNotification,
       }
 
       let continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
-      const handlerResult = await processMessage(hnadlerFunction, event, continuationId);
+      const handlerResult = await attemptProcessMessage(hnadlerFunction, event, continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
-
       await rsRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
       logger.trace(`message ${event.eventName} for ${handlerName} recorded as processed`);
+
 
       await dispatchNotification('Success', event, handlerResult);
       logger.trace(`message ${event.eventName} for ${handlerName} notification disaptched`);
