@@ -22,7 +22,7 @@ let eventDispatcher = function eventDispatcher(eventstore,
         return rx.Observable.fromEvent(eventAppeared.emitter, 'event')
           .filter(mAndF.isValidStreamType)
           .map(mAndF.transformEvent)
-          .share();
+          .source();
       }
     };
   };
