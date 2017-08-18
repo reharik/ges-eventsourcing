@@ -22,7 +22,8 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
 
       connection.on('closed', function(reason) {
         logger.info('ES connection closed, reason:', reason);
-        connection.connect();
+        logger.debug(connection);
+        return connection.connect();
       });
       console.log(`=========='connected'=========`);
       console.log('connected to eventstore');

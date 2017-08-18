@@ -27,7 +27,7 @@ module.exports = function(uuid, logger) {
           });
       },
 
-      async save(table, document) {
+      async save(table, document, id) {
         try {
           let query = `INSERT INTO "${table}" ("id", "document") 
           SELECT '${document.id}','${this.sanitizeDocument(document)}'
@@ -37,7 +37,7 @@ module.exports = function(uuid, logger) {
           return await pg.query(query);
         } catch (err) {
           logger.error(`error saving document: 
-this.sanitizeDocument(document)}, table: ${table}, id: ${document.id}`);
+this.sanitizeDocument(document)}, table: ${table}, id: ${id}`);
           logger.error(err);
         }
       },
