@@ -18,13 +18,14 @@ module.exports = function(uuid, logger) {
           });
       },
 
-      async saveAggregateView(table, aggregate, document) {
+      async saveAggregateView(table, aggregate, document, idName = 'id') {
         try {
           let query;
-          if (document.id) {
-            query = `UPDATE "${table}" SET document = '${this.sanitizeDocument(document)}' where id = '${document.id}';
-        INSERT INTO "${table}" ("id", "document") SELECT '${document.id}','${this.sanitizeDocument(document)}'
-        WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document.id}');`;
+          if (document[idName]) {
+            query = `UPDATE "${table}" SET document = '${this.sanitizeDocument(document)}' 
+            where id = '${document[idName]}';
+        INSERT INTO "${table}" ("id", "document") SELECT '${document[idName]}','${this.sanitizeDocument(document)}'
+        WHERE NOT EXISTS (SELECT 1 FROM "${table}" WHERE id = '${document[idName]}');`;
           }
           let updateAggSql = `UPDATE "${table}" SET meta = '${this.sanitizeDocument(aggregate)}'
             where id = '${aggregate.id}'`;
