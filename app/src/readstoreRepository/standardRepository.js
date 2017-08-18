@@ -30,7 +30,7 @@ module.exports = function(uuid, logger) {
       async save(table, document, id) {
         try {
           let query = `INSERT INTO "${table}" ("id", "document") 
-          SELECT '${document.id}','${this.sanitizeDocument(document)}'
+          SELECT '${id}','${this.sanitizeDocument(document)}'
         ON CONFLICT (id)
         DO UPDATE SET document = '${this.sanitizeDocument(document)}'`;
           logger.debug(query);
