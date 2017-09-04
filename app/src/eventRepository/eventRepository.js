@@ -22,10 +22,6 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
       let sliceStart = 0;
       let currentSlice;
       try {
-        invariant(
-          (aggregateType.isAggregateBase && aggregateType.isAggregateBase()),
-          'aggregateType must inherit from AggregateBase'
-        );
 
         invariant(id, 'id must be a present');
         // invariant(
@@ -33,10 +29,9 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         //   "version number must be greater than or equal to 0"
         // );
 
-        streamName = `${aggregateType.aggregateName()}-${id}`;
+        aggregate = aggregateType();
+        streamName = `${aggregate.aggregateName()}-${id}`;
         logger.debug(`Getting Aggregate by id with streamname: ${streamName}`);
-        // this might be problematic
-        aggregate = new aggregateType();
 
         do {
           // specify number of events to pull. if number of events too large for one call use limit
@@ -83,7 +78,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
       try {
         invariant(
           (aggregate.isAggregateBase && aggregate.isAggregateBase()),
-          'aggregateType must inherit from AggregateBase'
+          'aggregateType must compose aggregateBase'
         );
         // standard data for metadata portion of persisted event
         metadata = {
@@ -97,10 +92,10 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
 
         // add extra data to metadata portion of persisted event
         metadata = extend(metadata, _metadata);
-        streamName = `${aggregate.type}-${aggregate._id}`;
+        streamName = `${aggregate.aggregateName()}-${aggregate.state._id}`;
         newEvents = aggregate.getUncommittedEvents();
-        originalVersion = aggregate._version - newEvents.length;
-        logger.debug(`current aggregate version: ${aggregate._version}, original version: ${originalVersion}`);
+        originalVersion = aggregate.state._version - newEvents.length;
+        logger.debug(`current aggregate version: ${aggregate.state._version}, original version: ${originalVersion}`);
 
         logger.trace(`appending ${JSON.stringify(newEvents)} to stream: ${streamName}`);
 
