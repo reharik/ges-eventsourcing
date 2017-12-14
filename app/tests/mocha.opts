@@ -2,4 +2,3 @@
 --ui bdd
 --recursive
 --watch
---debug

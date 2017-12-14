@@ -9,12 +9,12 @@ let buffer = require('buffer');
 let fh = require('../../src/applicationFunctions/functionalHelpers')(R, _fantasy, buffer, logger);
 let mut = require('../../src/applicationFunctions/eventFunctions')(R, uuid, fh);
 
-const event = { Event:
+const event = { event:
 { EventStreamId: 'Trainerbdb77dea-f7c0-40b4-bf10-03c532b4bf32',
   EventId: '98e9b4fe-5fa0-4689-ad4f-f14d38efe7e6',
   EventNumber: 0,
   EventType: 'trainerHired',
-  Data: new Buffer(JSON.stringify('hello world'), 'utf8'),
+  data: new Buffer(JSON.stringify('hello world'), 'utf8'),
   Metadata: new Buffer(JSON.stringify('hello world'), 'utf8'),
   IsJson: true,
   Created: '636184017669017780',
@@ -40,7 +40,7 @@ describe('EVENT HELPERS', function() {
   let transformed;
 
   beforeEach(function() {
-    transformed = mut.incomingEvent(event);
+    transformed = mut.parseData(event);
   });
 
   context('when calling incoming', function() {
