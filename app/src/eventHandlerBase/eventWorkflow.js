@@ -8,14 +8,14 @@ module.exports = function(dispatchNotification,
   return async function eventWorkflow(event, handlerName, hnadlerFunction) {
     let fh = appfuncs.functionalHelpers;
 
-    const processMessage = async (hnadlerFunction, event, continuationId) => {
+    const processMessage = async continuationId => {
       return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
     };
 
-    const attemptProcessMessage = (hnadlerFunction, event, continuationId) => {
+    const attemptProcessMessage = continuationId => {
       return promiseretry(function(retry, number) {
         if (number > 1) { logger.info(`retry attempt: ${number - 1}`); }
-        return processMessage(hnadlerFunction, event, continuationId).catch(err => {
+        return processMessage(continuationId).catch(err => {
           logger.info(err.message);
           retry(err);
         });
@@ -33,7 +33,7 @@ module.exports = function(dispatchNotification,
       }
 
       let continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
-      const handlerResult = await attemptProcessMessage(hnadlerFunction, event, continuationId);
+      const handlerResult = await attemptProcessMessage(continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
       await rsRepository.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
       logger.trace(`message ${event.eventName} for ${handlerName} recorded as processed`);

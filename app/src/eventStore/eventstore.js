@@ -1,7 +1,5 @@
-
-
 module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, events, uuid) {
-  return function eventstore (options) {
+  return function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream =
       new nodeeventstoreclient.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
@@ -49,7 +47,7 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
       eventEmitterInstance,
       liveProcessingStarted,
       subscriptionDropped,
-      gesConnection: ges,
+      gesConnection: connection,
       createEventData: nodeeventstoreclient.createEventData,
       createJsonEventData: nodeeventstoreclient.createJsonEventData,
       expectedVersion: nodeeventstoreclient.expectedVersion,

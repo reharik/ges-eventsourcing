@@ -1,12 +1,12 @@
 module.exports = function(nodeeventstoreclient, promiseretry, logger) {
   let connection;
   let connectionState = '';
-  return (options) => {
-    if (connectionState === 'connected' || connection._handler._state === 'connected') {
-      return connection
+  const getConnection = options => {
+    if (connectionState === 'connected') {
+      return connection;
     }
 
-    if (!connection || connectionState === 'closed' || connection._handler._state === 'closed') {
+    if (!connection || connectionState === 'closed') {
       connection = nodeeventstoreclient.createConnection(
         {verbose: options.verbose, log: logger},
         {host: options.host, port: 1113});
@@ -35,4 +35,5 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
 
     return connection;
   };
+  return getConnection;
 };

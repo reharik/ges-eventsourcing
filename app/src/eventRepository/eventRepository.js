@@ -62,11 +62,11 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         logger.trace(`state of aggregate returning`);
         logger.trace(JSON.stringify(aggregate));
 
-        return aggregate;
       } catch (err) {
         logger.error(`Error thrown by eventRepository 'getById' this may have been a check for existing aggregate.`);
         logger.error(err);
       }
+      return aggregate;
     };
 
     let save = async function(aggregate, _metadata) {

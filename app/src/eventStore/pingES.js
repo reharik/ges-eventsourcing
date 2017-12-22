@@ -1,10 +1,6 @@
-module.exports = function(eventstoreConnection, promiseretry, logger) {
-  var ping = function(options) {
+module.exports = function(eventstoreConnection, promiseretry) {
+  const ping = function(options) {
     const configs = options.eventstore;
-    console.log(`==========configs=========`);
-    console.log(configs);
-    console.log(`==========END configs=========`);
-
     return eventstoreConnection(configs);
   };
   return options => {

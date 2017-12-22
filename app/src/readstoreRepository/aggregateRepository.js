@@ -39,6 +39,7 @@ module.exports = function(uuid, logger) {
  table: ${table}`);
           logger.error(err);
         }
+        return undefined;
       },
 
       async saveSingletonAggregateView(table, aggregate, document, id) {
@@ -55,6 +56,7 @@ module.exports = function(uuid, logger) {
   id: ${id}`);
           logger.error(err);
         }
+        return undefined;
       }
     };
   };

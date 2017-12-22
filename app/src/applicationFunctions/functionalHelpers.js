@@ -1,7 +1,4 @@
-/**
- * Created by rharik on 11/1/15.
- */
-
+/*eslint-disable */
 module.exports = function(R, _fantasy, buffer, logger) {
   let Maybe = _fantasy.Maybe;
 
