@@ -34,7 +34,7 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
       console.log(`==========END CLOSED!!!!=========`);
 
       logger.info('ES connection closed, reason:', reason);
-      return getConnection(options);
+      connection = getConnection(options);
     });
 
     connection.on('disconnected', function(reason) {
@@ -44,7 +44,7 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
       console.log(`==========END "DISCONNECTED!!!"=========`);
 
       logger.info('ES connection closed, reason:', reason);
-      return getConnection(options);
+      connection = getConnection(options);
     });
 
     return connection;
