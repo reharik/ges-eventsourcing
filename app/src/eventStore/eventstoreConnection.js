@@ -19,7 +19,8 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
       console.log(`=========='connected'=========`);
       console.log('connected to eventstore');
       console.log(`==========END 'connected'=========`);
-      logger.trace(`gesConnection: ${JSON.stringify(connection, null, 4)} - ${JSON.stringify(tcpEndPoint, null, 4)}`);
+      logger.trace(`gesConnection: ${JSON.stringify(connection._handler, null, 4)}
+ - ${JSON.stringify(tcpEndPoint, null, 4)}`);
     });
 
     connection.on('error', function(err) {
