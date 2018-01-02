@@ -19,7 +19,7 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
       console.log(`=========='connected'=========`);
       console.log('connected to eventstore');
       console.log(`==========END 'connected'=========`);
-      logger.debug('gesConnection: ' + connection + ' - ' + tcpEndPoint);
+      logger.trace(`gesConnection: ${JSON.stringify(connection, null, 4)} - ${JSON.stringify(tcpEndPoint, null, 4)}`);
     });
 
     connection.on('error', function(err) {
@@ -29,6 +29,20 @@ module.exports = function(nodeeventstoreclient, promiseretry, logger) {
 
     connection.on('closed', function(reason) {
       connectionState = 'closed';
+      console.log(`==========CLOSED!!!!=========`);
+      console.log('CLOSED!!!!');
+      console.log(`==========END CLOSED!!!!=========`);
+
+      logger.info('ES connection closed, reason:', reason);
+      return getConnection(options);
+    });
+
+    connection.on('disconnected', function(reason) {
+      connectionState = 'closed';
+      console.log(`=========="DISCONNECTED!!!"=========`);
+      console.log('DISCONNECTED!!!');
+      console.log(`==========END "DISCONNECTED!!!"=========`);
+
       logger.info('ES connection closed, reason:', reason);
       return getConnection(options);
     });

@@ -5,11 +5,11 @@ module.exports = function(dispatchNotification,
                           promiseretry,
                           logger) {
 
-  return async function eventWorkflow(event, handlerName, hnadlerFunction) {
+  return async function eventWorkflow(event, handlerName, handlerFunction) {
     let fh = appfuncs.functionalHelpers;
 
     const processMessage = async continuationId => {
-      return await hnadlerFunction(fh.getSafeValue('data', event), continuationId);
+      return await handlerFunction(fh.getSafeValue('data', event), continuationId);
     };
 
     const attemptProcessMessage = continuationId => {
