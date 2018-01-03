@@ -18,8 +18,11 @@ module.exports = function(uuid, logger) {
       },
 
       async getByIds(ids, table) {
+        // this is supposed to work too
+        // let query = `SELECT * from "${table}" where "id" = ($1)`;
         let query = (`SELECT * from "${table}" where "id" in ('${ids.join("','")}')`);
         logger.debug(query);
+        // return await pg.query(query, ids)
         return await pg.query(query)
           .then(result => {
             const row = result.rows[0];

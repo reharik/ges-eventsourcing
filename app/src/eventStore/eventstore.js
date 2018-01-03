@@ -1,5 +1,5 @@
 module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, events, uuid) {
-  return function eventstore(options) {
+  return async function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream =
       new nodeeventstoreclient.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
@@ -30,13 +30,14 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
 
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
+      let conn = await connection();
       command.createDate = new Date();
       let event = nodeeventstoreclient.createJsonEventData(
         uuid.v4(),
         command,
         {eventName: commandName, continuationId, streamType: 'command'},
         commandName);
-      await connection.appendToStream(
+      await conn.appendToStream(
         'command',
         nodeeventstoreclient.expectedVersion.any,
         [event],
