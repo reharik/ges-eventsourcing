@@ -1,5 +1,5 @@
 module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, events, uuid) {
-  return async function eventstore(options) {
+  return function eventstore(options) {
     const configs = options.eventstore;
     const credentialsForAllEventsStream =
       new nodeeventstoreclient.UserCredentials(configs.systemUsers.admin, configs.systemUsers.adminPassword);
