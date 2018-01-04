@@ -39,7 +39,7 @@ module.exports = function(nodeeventstoreclient, logger) {
     });
 
     return connection.connect()
-      .then(() => new Promise(function(res) {
+      .then(() => new Promise(res => {
         connectionState = 'connected';
         return connection.once('connected', tcpEndPoint => {
           console.log(`=========='connected'=========`);
