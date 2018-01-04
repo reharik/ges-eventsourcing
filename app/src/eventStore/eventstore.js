@@ -1,7 +1,6 @@
 module.exports = function(
   nodeeventstoreclient,
   eventstoreConnection,
-  pingES,
   logger,
   events,
   uuid) {
@@ -33,7 +32,7 @@ module.exports = function(
     };
 
     let connection = async () => {
-      const conn = await pingES(options);
+      const conn = await eventstoreConnection(configs);
       if (conn._handler.state !== 'connected') {
         let msg = `Connection: ${conn._connectionName} is not connected!`;
         logger.error(msg);
