@@ -15,7 +15,7 @@ module.exports = function(eventstore, uuid) {
       streamType: 'notification'
     };
 
-    let notification = eventstore.createJsonEventData(uuid.v4(), data, metadata, 'notification');
+    let notification = await eventstore.createJsonEventData(uuid.v4(), data, metadata, 'notification');
     const connection = eventstore.gesConnection();
     await connection.appendToStream(
       'notification',
