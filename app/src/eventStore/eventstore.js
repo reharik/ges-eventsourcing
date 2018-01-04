@@ -26,7 +26,15 @@ module.exports = function(nodeeventstoreclient, eventstoreConnection, logger, ev
       logger.info('Subscription dropped.');
     };
 
-    let connection = eventstoreConnection(configs);
+    let connection = async () => {
+      const conn = await eventstoreConnection(configs);
+      if (conn._handler.state !== 'connected') {
+        let msg = `Connection: ${conn._connectionName} is not connected!`;
+        logger.error(msg);
+        throw new Error(msg);
+      }
+      return conn;
+    };
 
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user

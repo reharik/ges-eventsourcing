@@ -37,7 +37,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
           // specify number of events to pull. if number of events too large for one call use limit
 
           // get all events, or first batch of events from GES
-          const connection = await eventstore.gesConnection;
+          const connection = eventstore.gesConnection();
           currentSlice = await connection.readStreamEventsForward(streamName,
             sliceStart,
             options.readPageSize,
@@ -102,7 +102,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         events = newEvents.map(e=>
           eventstore.createJsonEventData(uuid.v4(), e, metadata, e.eventName || '')
         );
-        const connection = await eventstore.gesConnection;
+        const connection = eventstore.gesConnection();
         await connection.appendToStream(streamName, originalVersion, events, eventstore.credentials);
 
         aggregate.clearUncommittedEvents();
