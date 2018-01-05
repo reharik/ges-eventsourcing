@@ -35,7 +35,7 @@ module.exports = function(
 
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
-      let conn = await connection();
+      let conn = await connection;
       command.createDate = new Date();
       let event = nodeeventstoreclient.createJsonEventData(
         uuid.v4(),
