@@ -4,7 +4,7 @@ let eventDispatcher = function eventDispatcher(eventstore,
                                                R,
                                                mapAndFilterStream) {
   return async function() {
-    let connection = await eventstore.gesConnection();
+    let connection = await eventstore.gesConnection;
     return {
       startDispatching(streamType) {
         logger.info('startDispatching | startDispatching called');

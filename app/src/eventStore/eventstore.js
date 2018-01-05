@@ -31,22 +31,7 @@ module.exports = function(
       logger.info('Subscription dropped.');
     };
 
-    let connection = async () => {
-      const conn = await eventstoreConnection(configs);
-      if (conn._handler.state !== 'connected') {
-        let msg = `Connection: ${conn._connectionName} is not connected!`;
-        logger.error(msg);
-        console.log(`==========conn=========`);
-        console.log(conn); // eslint-disable-line quotes
-        console.log(`==========END conn=========`);
-        console.log(`==========conn._handler.state=========`);
-        console.log(conn._handler); // eslint-disable-line quotes
-        console.log(conn._handler.state); // eslint-disable-line quotes
-        console.log(`==========END conn._handler.state=========`);
-        // throw new Error(msg);
-      }
-      return conn;
-    };
+    let connection = eventstoreConnection.getConnection();
 
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
