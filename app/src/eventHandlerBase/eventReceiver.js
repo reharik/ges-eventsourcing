@@ -2,16 +2,16 @@ module.exports = function(eventWorkflow, concurrentqueue) {
 
   return function(source, handler) {
 
-    const processor = x => {
+    const processor = async x => {
       // horrible violation of open-closed principle
       const func = handler[x.eventName];
       const baseFunc = handler.baseHandler ? handler.baseHandler[x.eventName] : undefined;
       let result = Promise.resolve();
       if (baseFunc) {
-        result = eventWorkflow(x, handler.baseHandlerName, baseFunc.bind(handler.baseHandler));
+        result = await eventWorkflow(x, handler.baseHandlerName, baseFunc.bind(handler.baseHandler));
       }
       if (func) {
-        result = eventWorkflow(x, handler.handlerName, func.bind(handler));
+        result = await eventWorkflow(x, handler.handlerName, func.bind(handler));
       }
       return result;
     };
