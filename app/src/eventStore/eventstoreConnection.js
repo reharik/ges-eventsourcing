@@ -1,48 +1,18 @@
 module.exports = function(nodeeventstoreclient, logger) {
-  let connection;
-  let connectionState = '';
-
   const getConnection = options => {
 
-    if (connectionState === 'connected') {
-      return Promise.resolve(connection);
-    }
+    let connection = nodeeventstoreclient.createConnection(
+      {verbose: options.verbose, log: logger},
+      {host: options.host, port: 1113});
 
-    if (!connection || connectionState === 'closed') {
-      connection = nodeeventstoreclient.createConnection(
-        {verbose: options.verbose, log: logger},
-        {host: options.host, port: 1113});
-    }
-
-    connection.on('error', function(err) {
-      connectionState = 'error';
-      logger.error(`Error occurred on ES connection: ${connection._connectionName}`, err);
-    });
-
-    connection.on('closed', function(reason) {
-      connectionState = 'closed';
-      console.log(`==========CLOSED!!!!=========`);
-      console.log('CLOSED!!!!');
-      console.log(`==========END CLOSED!!!!=========`);
-
+    connection.on('closed', reason => {
       logger.info(`ES connection: ${connection._connectionName} closed, reason:`, reason);
-      connection = getConnection(options);
-    });
-
-    connection.on('disconnected', function(reason) {
-      connectionState = 'closed';
-      console.log(`=========="DISCONNECTED!!!"=========`);
-      console.log('DISCONNECTED!!!');
-      console.log(`==========END "DISCONNECTED!!!"=========`);
-
-      logger.info(`ES connection: ${connection._connectionName} disconnected, reason:`, reason);
-      connection = getConnection(options);
+      throw new Error(reason);
     });
 
     return connection.connect()
       .then(() => new Promise(res => {
         return connection.once('connected', tcpEndPoint => {
-          connectionState = 'connected';
           console.log(`=========='connected'=========`);
           console.log('connected to eventstore');
           console.log(`==========END 'connected'=========`);
