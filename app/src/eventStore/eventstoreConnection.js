@@ -1,32 +1,39 @@
-module.exports = function(nodeeventstoreclient, logger) {
-  const getConnection = options => {
+module.exports = function(nodeeventstoreclient, promiseretry, logger) {
+  return options => {
 
-    let connection = nodeeventstoreclient.createConnection(
+    let gesConnection = nodeeventstoreclient.createConnection(
       {verbose: options.verbose, log: logger},
       {host: options.host, port: 1113});
 
-    connection.on('closed', reason => {
-      logger.info(`ES connection: ${connection._connectionName} closed, reason:`, reason);
+    gesConnection.on('closed', reason => {
+      logger.info(`ES gesConnection: ${gesConnection._connectionName} closed, reason:`, reason);
       throw new Error(reason);
     });
 
-    return connection.connect()
-      .then(() => new Promise(res => {
-        return connection.once('connected', tcpEndPoint => {
-          console.log(`=========='connected'=========`);
-          console.log('connected to eventstore');
-          console.log(`==========END 'connected'=========`);
-          logger.trace(`gesConnection: ${connection._connectionName}
+    const ping = () => {
+      return gesConnection.connect()
+        .then(() => new Promise(res => {
+          return gesConnection.once('connected', tcpEndPoint => {
+            console.log(`=========='connected'=========`);
+            console.log('connected to eventstore');
+            console.log(`==========END 'connected'=========`);
+            logger.trace(`gesConnection: ${gesConnection._connectionName}
  - ${JSON.stringify(tcpEndPoint, null, 4)}`);
-          return res(connection);
-        });
-      }))
-      .catch(err =>
-        logger.error(`Error occurred on ES connection: ${connection._connectionName}`, err)
-      );
-  };
+            return res({gesConnection});
+          });
+        }))
+        .catch(err =>
+          logger.error(`Error occurred on ES _connectionName: ${gesConnection._connectionName}`, err)
+        );
+    };
 
-  return {
-    getConnection
+    const retry = () => {
+      return promiseretry(function(retry, number) {
+        console.log('es connect attempt number', number);
+        return ping().catch(retry);
+      }, {retries: 10});
+    };
+
+    return retry();
   };
 };
