@@ -31,10 +31,11 @@ module.exports = function(
       logger.info('Subscription dropped.');
     };
 
+    let connection = eventstoreConnection(configs);
 
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
-      let conn = await eventstoreConnection.gesConnection;
+      let conn = await connection;
       command.createDate = new Date();
       let event = nodeeventstoreclient.createJsonEventData(
         uuid.v4(),
@@ -52,7 +53,7 @@ module.exports = function(
       eventEmitterInstance,
       liveProcessingStarted,
       subscriptionDropped,
-      gesConnection: eventstoreConnection.gesConnection,
+      gesConnection: connection,
       createEventData: nodeeventstoreclient.createEventData,
       createJsonEventData: nodeeventstoreclient.createJsonEventData,
       expectedVersion: nodeeventstoreclient.expectedVersion,
