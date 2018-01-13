@@ -31,7 +31,7 @@ module.exports = function(
       logger.info('Subscription dropped.');
     };
 
-    let connection = eventstoreConnection(configs);
+    let connection = eventstoreConnection.gesConnection(configs);
 
     const commandPoster = async function(command, commandName, continuationId) {
       // fortify commands with metadata like date and user
