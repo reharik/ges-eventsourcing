@@ -17,10 +17,12 @@ module.exports = function(
 
   return options => {
     return promiseretry(function(retry, number) {
-      console.log(retry);
       console.log('es connect attempt number', number);
-      return ping(options).catch(retry);
-    }, {retries: 10});
+      return ping(options).catch(err => {
+        console.log(err);
+        retry(err);
+      });
+    }, {retries: options.retryCount || 5});
   };
 };
 
