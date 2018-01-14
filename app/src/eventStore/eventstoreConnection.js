@@ -12,7 +12,7 @@ module.exports = function(nodeeventstoreclient, pingES, logger) {
         throw new Error(reason);
       });
 
-      return gesConnection.connect()
+      gesConnection.connect()
         .then(() => new Promise(res => {
           return gesConnection.once('connected', tcpEndPoint => {
             console.log(`=========='connected'=========`);
@@ -20,7 +20,7 @@ module.exports = function(nodeeventstoreclient, pingES, logger) {
             console.log(`==========END 'connected'=========`);
             logger.trace(`gesConnection: ${gesConnection._connectionName}
  - ${JSON.stringify(tcpEndPoint, null, 4)}`);
-            return res({gesConnection});
+            return res(gesConnection);
           });
         }))
         .catch(err =>
