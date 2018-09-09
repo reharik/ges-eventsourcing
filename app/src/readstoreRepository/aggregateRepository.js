@@ -21,7 +21,7 @@ module.exports = function(uuid, logger) {
       async saveAggregateView(table, aggregate, document, idName = 'id') {
         try {
           let query;
-          if (document[idName]) {
+          if (document && document[idName]) {
             query = `UPDATE "${table}" SET document = '${this.sanitizeDocument(document)}' 
             where id = '${document[idName]}';
         INSERT INTO "${table}" ("id", "document") SELECT '${document[idName]}','${this.sanitizeDocument(document)}'
@@ -35,7 +35,7 @@ module.exports = function(uuid, logger) {
         } catch (err) {
           logger.error(`error in saveAggregateView
  aggregate: ${this.sanitizeDocument(aggregate)},
- document: ${this.sanitizeDocument(document)},
+ document: ${document && this.sanitizeDocument(document)},
  table: ${table}`);
           logger.error(err);
         }
