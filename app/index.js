@@ -11,7 +11,7 @@ module.exports = function(_options) {
       moduleName: 'EventModels'
     }
   };
-  options = Object.extend({}, options, _options || {});
+  options = Object.assign({}, options, _options || {});
   return registry(options);
 };
 

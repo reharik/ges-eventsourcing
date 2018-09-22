@@ -9,7 +9,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, mapAndF
       readPageSize: 500,
       streamType: 'event'
     };
-    options = Object.extend({}, options, _options || {});
+    options = Object.assign({}, options, _options || {});
 
     invariant(
       options.readPageSize,
@@ -91,7 +91,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, mapAndF
         };
 
         // add extra data to metadata portion of persisted event
-        metadata = Object.extend({}, metadata, _metadata);
+        metadata = Object.assign({}, metadata, _metadata);
         streamName = `${aggregate.aggregateName()}-${aggregate.state._id}`;
         newEvents = aggregate.getUncommittedEvents();
         originalVersion = aggregate.state._version - newEvents.length;
