@@ -1,8 +1,9 @@
 module.exports = function(pg, config, asyncretry) {
   const ping = async function(client, bail, number) {
     console.log('attempt to connect to the db number', number);
-    await client.connect();
-
+    if (!client._connected) {
+      await client.connect();
+    }
     const result = await client.query(
       `select relname as table from pg_stat_user_tables where schemaname = 'public'`,
     );
@@ -14,6 +15,7 @@ module.exports = function(pg, config, asyncretry) {
     console.log(true);
     console.log('==========END dbExists=========');
     await client.end();
+    return client;
   };
 
   return () => {
