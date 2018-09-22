@@ -3,13 +3,13 @@
  */
 
 
-module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend, mapAndFilterStream ) {
+module.exports = function(eventstore, logger, appfuncs, invariant, uuid, mapAndFilterStream ) {
   return function(_options) {
     let options = {
       readPageSize: 500,
       streamType: 'event'
     };
-    extend(options, _options || {});
+    options = Object.extend({}, options, _options || {});
 
     invariant(
       options.readPageSize,
@@ -91,7 +91,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
         };
 
         // add extra data to metadata portion of persisted event
-        metadata = extend(metadata, _metadata);
+        metadata = Object.extend({}, metadata, _metadata);
         streamName = `${aggregate.aggregateName()}-${aggregate.state._id}`;
         newEvents = aggregate.getUncommittedEvents();
         originalVersion = aggregate.state._version - newEvents.length;

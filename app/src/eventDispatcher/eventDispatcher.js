@@ -1,8 +1,8 @@
 let eventDispatcher = function eventDispatcher(eventstore,
-                                               logger,
-                                               rx,
-                                               R,
-                                               mapAndFilterStream) {
+  logger,
+  rx,
+  R,
+  mapAndFilterStream) {
   return async function() {
     let connection = await eventstore.gesConnection;
     return {

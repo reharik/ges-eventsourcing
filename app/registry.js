@@ -10,7 +10,7 @@ module.exports = function(_options) {
   let options = _options || {};
   let registry = dagon(options.dagon).registry;
   return registry(x=>
-        x.pathToRoot(path.join(__dirname, '..'))
-            .requireDirectoryRecursively('./app/src')
-            .complete());
+    x.pathToRoot(path.join(__dirname, '..'))
+      .requireDirectoryRecursively('./app/src')
+      .complete());
 };

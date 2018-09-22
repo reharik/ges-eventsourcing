@@ -3,7 +3,6 @@
  */
 
 
-let extend = require('extend');
 let registry = require('./registry');
 
 module.exports = function(_options) {
@@ -12,7 +11,7 @@ module.exports = function(_options) {
       moduleName: 'EventModels'
     }
   };
-  extend(options, _options || {});
+  options = Object.extend({}, options, _options || {});
   return registry(options);
 };
 

@@ -1,9 +1,9 @@
 module.exports = function(dispatchNotification,
-                          rsRepository,
-                          appfuncs,
-                          R,
-                          promiseretry,
-                          logger) {
+  rsRepository,
+  appfuncs,
+  R,
+  promiseretry,
+  logger) {
 
   return async function eventWorkflow(event, handlerName, handlerFunction) {
     let fh = appfuncs.functionalHelpers;
