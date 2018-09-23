@@ -1,10 +1,15 @@
 module.exports = function(pg, config, asyncretry) {
-  const ping = async function(client, bail, number) {
+  let pool;
+  const ping = async function(bail, number) {
     console.log('attempt to connect to the db number', number);
-    if (!client._connected) {
-      await client.connect();
+    if (!pool) {
+      const configs = config.configs.children.postgres.config;
+      console.log(`==========configs=========`);
+      console.log(configs);
+      console.log(`==========END configs=========`);
+      pool = new pg.Pool(configs);
     }
-    const result = await client.query(
+    const result = await pool.query(
       `select relname as table from pg_stat_user_tables where schemaname = 'public'`,
     );
 
@@ -14,18 +19,11 @@ module.exports = function(pg, config, asyncretry) {
     console.log('==========dbExists=========');
     console.log(true);
     console.log('==========END dbExists=========');
-    await client.end();
-    return client;
+    return pool;
   };
 
   return () => {
-    const configs = config.configs.children.postgres.config;
-    console.log(`==========configs=========`);
-    console.log(configs);
-    console.log(`==========END configs=========`);
-    const client = new pg.Client(configs);
-
-    return asyncretry((bail, number) => ping(client, bail, number), {
+    return asyncretry((bail, number) => ping(bail, number), {
       retries: 10
     });
   };
