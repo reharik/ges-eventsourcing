@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "JSON": "1.0.0",
+    "async-retry": "^1.2.3",
     "buffer": "3.6.0",
     "concurrent-queue": "7.0.1",
     "corelogger": "github:reharik/core_logger",
