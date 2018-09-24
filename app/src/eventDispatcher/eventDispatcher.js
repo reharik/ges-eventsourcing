@@ -2,15 +2,14 @@ let eventDispatcher = function eventDispatcher(eventstore,
   logger,
   rx,
   R,
-  mapAndFilterStream,
-  rsRepository) {
-  return async function(eventHandlerName) {
+  mapAndFilterStream) {
+  return async function() {
     let connection = await eventstore.gesConnection;
-    const rsRepo = await rsRepository;
-    let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
-    const response = await rsRepo.saveQuery(query);
-    const row = response.rows[0];
-    const rowPosition = row && row.commitPosition ? row.commitPosition : null;
+    // const rsRepo = await rsRepository;
+    // let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
+    // const response = await rsRepo.saveQuery(query);
+    // const row = response.rows[0];
+    // const rowPosition = row && row.commitPosition ? row.commitPosition : null;
 
     return {
       startDispatching(streamType) {
@@ -18,7 +17,7 @@ let eventDispatcher = function eventDispatcher(eventstore,
         const eventAppeared = eventstore.eventEmitterInstance();
         let mAndF = mapAndFilterStream(streamType);
         let subscription = connection.subscribeToAllFrom(
-          rowPosition,
+          null,
           false,
           eventAppeared.emitEvent,
           eventstore.liveProcessingStarted,
