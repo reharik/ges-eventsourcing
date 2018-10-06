@@ -57,6 +57,7 @@ module.exports = function(
       createEventData: nodeeventstoreclient.createEventData,
       createJsonEventData: nodeeventstoreclient.createJsonEventData,
       expectedVersion: nodeeventstoreclient.expectedVersion,
+      Position: nodeeventstoreclient.Position,
       credentials: credentialsForAllEventsStream,
       commandPoster
     };

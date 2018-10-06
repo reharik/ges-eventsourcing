@@ -17,11 +17,12 @@ module.exports = function(uuid, logger) {
           });
       },
 
-      async recordEventProcessed(commitPosition, eventHandlerName) {
+      async recordEventProcessed(commitPosition, preparePosition, eventHandlerName) {
 
         let query = `WITH UPSERT AS (
  UPDATE "lastProcessedPosition"
  SET "commitPosition" = '${commitPosition}',
+ "preparePosition" = '${preparePosition}',
   "handlerType" =  '${eventHandlerName}'
  WHERE "handlerType" = '${eventHandlerName}' )
  INSERT INTO "lastProcessedPosition"

@@ -36,7 +36,10 @@ module.exports = function(dispatchNotification,
       let continuationId = R.view(R.lensProp('continuationId'), fh.getSafeValue('metadata', event));
       const handlerResult = await attemptProcessMessage(continuationId);
       logger.trace(`message for ${handlerName} was handled ${event.eventName}`);
-      await rsRepo.recordEventProcessed(fh.getSafeValue('commitPosition', event), handlerName);
+      await rsRepo.recordEventProcessed(
+        fh.getSafeValue('commitPosition', event),
+        fh.getSafeValue('preparePosition', event),
+        handlerName);
       logger.trace(`message ${event.eventName} for ${handlerName} recorded as processed`);
 
 

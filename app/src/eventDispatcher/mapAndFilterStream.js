@@ -31,12 +31,18 @@ module.exports = function mapAndFilterStream(appfuncs, R) {
       R.chain(fh.safeProp('commitPosition')),
       fh.safeProp('originalPosition'));
 
+    let preparePosition = R.compose(
+      R.chain(fh.safeProp('low')),
+      R.chain(fh.safeProp('preparePosition')),
+      fh.safeProp('originalPosition'));
+
     //transformEvent:: JSON -> Maybe JSON
     let transformEvent = function(payload) {
       return {
         eventName: eventName(payload).getOrElse(),
         continuationId: continuationId(payload).getOrElse(),
         commitPosition: commitPosition(payload).getOrElse(),
+        preparePosition: preparePosition(payload).getOrElse(),
         data: ef.parseData(payload).getOrElse(),
         metadata: ef.parseMetadata(payload).getOrElse()
       };
