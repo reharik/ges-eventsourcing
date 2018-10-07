@@ -60,7 +60,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, mapAndF
 
         } while (!currentSlice.isEndOfStream);
         logger.trace(`state of aggregate returning`);
-        logger.trace(JSON.stringify(aggregate));
+        logger.trace(JSON.stringify(aggregate.debug()));
 
       } catch (err) {
         logger.error(`Error thrown by eventRepository 'getById' this may have been a check for existing aggregate.`);
