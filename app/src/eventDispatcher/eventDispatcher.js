@@ -7,7 +7,8 @@ let eventDispatcher = function eventDispatcher(eventstore,
   return async function(eventHandlerName) {
     let connection = await eventstore.gesConnection;
     const rsRepo = await rsRepository;
-    let query = 'SELECT * from "lastProcessedPosition" where "handlerType" = \'' + eventHandlerName + '\'';
+    let query = `SELECT "commitPosition", "preparePosition"  from "lastProcessedPosition"
+     where "handlerType" = '${eventHandlerName}'`;
     const response = await rsRepo.saveQuery(query);
     const row = response.rows[0];
     const commitPosition = row && row.commitPosition ? row.commitPosition : null;
@@ -15,6 +16,13 @@ let eventDispatcher = function eventDispatcher(eventstore,
     const position = commitPosition && preparePosition
       ? new eventstore.Position(commitPosition, preparePosition)
       : null;
+    logger.info(`${
+      eventHandlerName
+    } starting stream @preparePosition:${
+      preparePosition
+    }, @commitPosition:${
+      commitPosition
+    }`);
     return {
       startDispatching(streamType) {
         logger.info('startDispatching | startDispatching called');
