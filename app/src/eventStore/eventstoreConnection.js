@@ -4,7 +4,7 @@ module.exports = function(nodeeventstoreclient, pingES, logger) {
       await pingES(options);
 
       let gesConnection = nodeeventstoreclient.createConnection(
-        {verbose: options.verbose, log: logger},
+        Object.assign(options, {log: logger}),
         {host: options.host, port: 1113});
 
       await gesConnection.connect();
