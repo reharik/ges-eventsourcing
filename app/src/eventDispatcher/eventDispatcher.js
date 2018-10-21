@@ -1,28 +1,11 @@
 let eventDispatcher = function eventDispatcher(eventstore,
   logger,
-  rsRepository,
   rx,
   R,
   mapAndFilterStream) {
-  return async function(eventHandlerName) {
+  return async function(position) {
     let connection = await eventstore.gesConnection;
-    const rsRepo = await rsRepository;
-    let query = `SELECT "commitPosition", "preparePosition"  from "lastProcessedPosition"
-     where "handlerType" = '${eventHandlerName}'`;
-    const response = await rsRepo.saveQuery(query);
-    const row = response.rows[0];
-    const commitPosition = row && row.commitPosition ? row.commitPosition : null;
-    const preparePosition = row && row.preparePosition ? row.preparePosition : null;
-    const position = commitPosition && preparePosition
-      ? new eventstore.Position(commitPosition, preparePosition)
-      : null;
-    logger.info(`${
-      eventHandlerName
-    } starting stream @preparePosition:${
-      preparePosition
-    }, @commitPosition:${
-      commitPosition
-    }`);
+
     return {
       startDispatching(streamType) {
         logger.info('startDispatching | startDispatching called');
