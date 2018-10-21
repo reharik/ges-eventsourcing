@@ -33,17 +33,21 @@ module.exports = function(
 
     let connection = eventstoreConnection.gesConnection(configs);
 
-    const commandPoster = async function(command, commandName, continuationId) {
+    const commandPoster = async function(command,
+      commandName,
+      continuationId,
+      streamType = 'command',
+      eventStream = 'command') {
       // fortify commands with metadata like date and user
       let conn = await connection;
       command.createDate = new Date();
       let event = nodeeventstoreclient.createJsonEventData(
         uuid.v4(),
         command,
-        {eventName: commandName, continuationId, streamType: 'command'},
+        {eventName: commandName, continuationId, streamType},
         commandName);
       await conn.appendToStream(
-        'command',
+        eventStream,
         nodeeventstoreclient.expectedVersion.any,
         [event],
         credentialsForAllEventsStream);
