@@ -13,7 +13,7 @@ module.exports = function(pg, config, asyncretry) {
       `select relname as table from pg_stat_user_tables where schemaname = 'public'`,
     );
 
-    if (result.rowCount === 0) {
+    if (!result || result.rowCount === 0) {
       throw new Error('db does not exist');
     }
     console.log('==========dbExists=========');
