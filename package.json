@@ -32,6 +32,7 @@
     "is-object-empty": "1.0.0",
     "node-eventstore-client": "0.2.5",
     "pg": "7.4.3",
+    "promise-retry": "1.1.1",
     "ramda": "0.22.1",
     "ramda-fantasy": "0.6.1",
     "rx": "4.1.0",
