@@ -27,6 +27,34 @@ module.exports = function(
 };
 
 
+module.exports = function(superagent, config, asyncretry) {
+  const configs = config.configs.children.eventstore;
+  const ping = async function(bail, number) {
+    console.log('attempt to connect to the ES number', number, Date.now().toString());
+    await superagent
+      .get(`${configs.http}/streams/$projections-$all/0`)
+      .set('Accept', 'application/vnd.eventstore.atom+json')
+      .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword)
+      .then(function() {
+        console.log(`=========="EventStore connection available"=========`);
+        console.log("EventStore connection available"); // eslint-disable-line quotes
+        console.log(`==========END "EventStore connection available"=========`);
+      })
+      .catch(() => {
+        throw new Error('es does not exist');
+      });
+  };
+
+  return () => {
+    return asyncretry((bail, number) => ping(bail, number),
+      Object.assign(configs.retry,
+        {retries: 10}
+      )
+    );
+  };
+};
+
+
 /************** run in console *********
 
 const promiseretry = require('promise-retry');
