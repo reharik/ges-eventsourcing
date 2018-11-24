@@ -3,13 +3,18 @@ module.exports = function(superagent, config, asyncretry) {
   const ping = async function(bail, number) {
     console.log('attempt to connect to the ES number', number, new Date().toString());
     try {
-      await superagent
+      const result = await superagent
         .get(`${configs.http}/streams/$projections-$all/0`)
         .set('Accept', 'application/vnd.eventstore.atom+json')
         .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword);
+      console.log(`==========result=========`);
+      console.log(result);
+      console.log(`==========END result=========`);
+
     } catch (ex) {
       throw new Error('es does not exist');
     }
+
   };
 
   return () => {
