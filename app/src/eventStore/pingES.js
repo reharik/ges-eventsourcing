@@ -14,9 +14,7 @@ module.exports = function(superagent, config, asyncretry) {
 
   return () => {
     return asyncretry((bail, number) => ping(bail, number),
-      Object.assign(configs.retry,
-        {retries: 5}
-      )
+      Object.assign({retries: 5}, configs.retry)
     );
   };
 };
