@@ -6,15 +6,15 @@ module.exports = function(superagent, config, asyncretry) {
       const result = await superagent
         .get(`${configs.http}/streams/$projections-$all/0`)
         .set('Accept', 'application/vnd.eventstore.atom+json')
-        .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword);
-      console.log(`==========result=========`);
-      console.log(result);
-      console.log(`==========END result=========`);
-
+        .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword)
+        .timeout({ response: 1000 });
+      if (result.status !== 200) {
+        throw new Error();
+      }
+      return JSON.stringify(result.body);
     } catch (ex) {
       throw new Error('es does not exist');
     }
-
   };
 
   return () => {
