@@ -2,19 +2,15 @@ module.exports = function(superagent, config, asyncretry) {
   const configs = config.configs.children.eventstore;
   const ping = async function(bail, number) {
     console.log('attempt to connect to the ES number', number, new Date().toString());
-    try {
-      const result = await superagent
-        .get(`${configs.http}/streams/$projections-$all/0`)
-        .set('Accept', 'application/vnd.eventstore.atom+json')
-        .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword)
-        .timeout({ response: 1000 });
-      if (result.status !== 200) {
-        throw new Error();
-      }
-      return JSON.stringify(result.body);
-    } catch (ex) {
+    const result = await superagent
+      .get(`${configs.http}/streams/$projections-$all/0`)
+      .set('Accept', 'application/vnd.eventstore.atom+json')
+      .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword)
+      .timeout({ response: 1000 });
+    if (result.status !== 200) {
       throw new Error('es does not exist');
     }
+    return JSON.stringify(result.body);
   };
 
   return () => {

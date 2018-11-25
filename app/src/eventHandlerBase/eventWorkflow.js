@@ -19,7 +19,7 @@ module.exports = function(dispatchNotification,
     };
 
     const attemptProcessMessage = continuationId => {
-      asyncretry(() => processMessage(continuationId), {
+      return asyncretry(() => processMessage(continuationId), {
         retries: 3, factor: 1
       });
     };
