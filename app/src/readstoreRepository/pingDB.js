@@ -1,7 +1,7 @@
 module.exports = function(pg, config, asyncretry) {
   let pool;
   const ping = async function(bail, number) {
-    console.log('attempt to connect to the db number', number);
+    console.log('attempt to connect to the db number', number, new Date().toString());
     if (!pool) {
       const configs = config.configs.children.postgres.config;
       console.log(`==========configs=========`);
@@ -13,7 +13,7 @@ module.exports = function(pg, config, asyncretry) {
       `select relname as table from pg_stat_user_tables where schemaname = 'public'`,
     );
 
-    if (result.rowCount === 0) {
+    if (!result || result.rowCount === 0) {
       throw new Error('db does not exist');
     }
     console.log('==========dbExists=========');
@@ -23,8 +23,8 @@ module.exports = function(pg, config, asyncretry) {
   };
 
   return () => {
-    return asyncretry((bail, number) => ping(bail, number), {
-      retries: 10
-    });
+    return asyncretry((bail, number) => ping(bail, number),
+      Object.assign({ retries: 5 }, config.configs.children.postgres.retry)
+    );
   };
 };

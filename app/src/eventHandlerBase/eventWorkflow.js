@@ -2,7 +2,7 @@ module.exports = function(dispatchNotification,
   rsRepository,
   appfuncs,
   R,
-  promiseretry,
+  asyncretry,
   logger) {
 
   return async function eventWorkflow(event, handlerName, handlerFunction) {
@@ -10,17 +10,18 @@ module.exports = function(dispatchNotification,
     const rsRepo = await rsRepository;
 
     const processMessage = async continuationId => {
-      return await handlerFunction(fh.getSafeValue('data', event), continuationId);
+      try {
+        return await handlerFunction(fh.getSafeValue('data', event), continuationId);
+      } catch (err) {
+        logger.info(err.message);
+        throw err;
+      }
     };
 
     const attemptProcessMessage = continuationId => {
-      return promiseretry(function(retry, number) {
-        if (number > 1) { logger.info(`retry attempt: ${number - 1}`); }
-        return processMessage(continuationId).catch(err => {
-          logger.info(err.message);
-          retry(err);
-        });
-      }, { retries: 3, factor: 1 });
+      return asyncretry(() => processMessage(continuationId), {
+        retries: 3, factor: 1
+      });
     };
 
     try {

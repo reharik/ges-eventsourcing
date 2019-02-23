@@ -1,28 +1,22 @@
-module.exports = function(
-  promiseretry,
-  superagent) {
-
-  const ping = options => {
-    return superagent
-      .get(`${options.http}/streams/$projections-$all/0`)
+module.exports = function(superagent, config, asyncretry) {
+  const configs = config.configs.children.eventstore;
+  const ping = async function(bail, number) {
+    console.log('attempt to connect to the ES number', number, new Date().toString());
+    const result = await superagent
+      .get(`${configs.http}/streams/$projections-$all/0`)
       .set('Accept', 'application/vnd.eventstore.atom+json')
-      .auth(options.systemUsers.admin, options.systemUsers.adminPassword)
-      .then(function(res) {
-        console.log(`=========="EventStore connection available"=========`);
-        console.log("EventStore connection available"); // eslint-disable-line quotes
-        console.log(`==========END "EventStore connection available"=========`);
-        return res.body;
-      });
+      .auth(configs.systemUsers.admin, configs.systemUsers.adminPassword)
+      .timeout({ response: 1000 });
+    if (result.status !== 200) {
+      throw new Error('es does not exist');
+    }
+    return JSON.stringify(result.body);
   };
 
-  return options => {
-    return promiseretry(function(retry, number) {
-      console.log('es connect attempt number', number);
-      return ping(options).catch(err => {
-        console.log(err);
-        retry(err);
-      });
-    }, {retries: options.retryCount || 5});
+  return () => {
+    return asyncretry((bail, number) => ping(bail, number),
+      Object.assign({retries: 5}, configs.retry)
+    );
   };
 };
 
