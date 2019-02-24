@@ -30,7 +30,7 @@
     "dagon": "github:reharik/dagon",
     "invariant": "2.2.4",
     "is-object-empty": "1.0.0",
-    "node-eventstore-client": "^0.2.10",
+    "node-eventstore-client": "^0.2.5",
     "pg": "7.4.3",
     "ramda": "0.22.1",
     "ramda-fantasy": "0.6.1",
