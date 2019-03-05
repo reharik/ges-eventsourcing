@@ -35,7 +35,6 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, mapAndF
 
         do {
           // specify number of events to pull. if number of events too large for one call use limit
-
           // get all events, or first batch of events from GES
           const connection = await eventstore.gesConnection;
           currentSlice = await connection.readStreamEventsForward(streamName,

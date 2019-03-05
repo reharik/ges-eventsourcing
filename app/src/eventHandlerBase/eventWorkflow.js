@@ -5,7 +5,7 @@ module.exports = function(dispatchNotification,
   asyncretry,
   logger) {
 
-  return async function eventWorkflow(event, handlerName, handlerFunction) {
+  return async function eventWorkflow(event, handlerName, handlerFunction, noRetry) {
     let fh = appfuncs.functionalHelpers;
     const rsRepo = await rsRepository;
 
@@ -13,12 +13,15 @@ module.exports = function(dispatchNotification,
       try {
         return await handlerFunction(fh.getSafeValue('data', event), continuationId);
       } catch (err) {
-        logger.info(err.message);
+        logger.error(err.message);
         throw err;
       }
     };
 
     const attemptProcessMessage = continuationId => {
+      if (noRetry) {
+        return processMessage(continuationId);
+      }
       return asyncretry(() => processMessage(continuationId), {
         retries: 3, factor: 1
       });
