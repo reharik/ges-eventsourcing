@@ -1,6 +1,7 @@
-module.exports = function(superagent, config, asyncretry) {
-  const configs = config.configs.children.eventstore;
-  const ping = async function(bail, number) {
+module.exports = function(superagent, asyncretry) {
+  // const configs = config.configs.children.eventstore;
+  const ping = async function(config, bail, number) {
+    const configs = config.configs.children.eventstore;
     console.log('attempt to connect to the ES number', number, new Date().toString());
     const result = await superagent
       .get(`${configs.http}/streams/$projections-$all/0`)
@@ -13,9 +14,9 @@ module.exports = function(superagent, config, asyncretry) {
     return JSON.stringify(result.body);
   };
 
-  return () => {
-    return asyncretry((bail, number) => ping(bail, number),
-      Object.assign({retries: 5}, configs.retry)
+  return config => {
+    return asyncretry((bail, number) => ping(config, bail, number),
+      Object.assign({retries: 5}, config.configs.children.eventstore.retry)
     );
   };
 };
@@ -23,10 +24,10 @@ module.exports = function(superagent, config, asyncretry) {
 
 /************** run in console *********
 
-const promiseretry = require('promise-retry');
-const superagent = require('superagent');
+ const promiseretry = require('promise-retry');
+ const superagent = require('superagent');
 
-const opts = {
+ const opts = {
   "host": "localhost",
     "http": "eventstore:2113",
     "systemUsers": {
@@ -35,7 +36,7 @@ const opts = {
   }
 };
 
-  const ping = options => {
+ const ping = options => {
     return superagent
       .get(`${options.http}/streams/$projections-$all/0`)
       .set('Accept', 'application/vnd.eventstore.atom+json')
@@ -48,7 +49,7 @@ const opts = {
       });
   };
 
-    promiseretry(function(retry, number) {
+ promiseretry(function(retry, number) {
       console.log(retry);
       console.log('es connect attempt number', number);
       return ping(opts).catch(retry);
