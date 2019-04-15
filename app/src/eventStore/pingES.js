@@ -1,7 +1,6 @@
 module.exports = function(superagent, asyncretry) {
   // const configs = config.configs.children.eventstore;
-  const ping = async function(config, bail, number) {
-    const configs = config.configs.children.eventstore;
+  const ping = async function(configs, bail, number) {
     console.log('attempt to connect to the ES number', number, new Date().toString());
     const result = await superagent
       .get(`${configs.http}/streams/$projections-$all/0`)
@@ -14,9 +13,9 @@ module.exports = function(superagent, asyncretry) {
     return JSON.stringify(result.body);
   };
 
-  return config => {
-    return asyncretry((bail, number) => ping(config, bail, number),
-      Object.assign({retries: 5}, config.configs.children.eventstore.retry)
+  return configs => {
+    return asyncretry((bail, number) => ping(configs, bail, number),
+      Object.assign({retries: 5}, configs.retry)
     );
   };
 };

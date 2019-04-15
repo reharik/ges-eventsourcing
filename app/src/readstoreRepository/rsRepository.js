@@ -3,8 +3,8 @@ module.exports = function(pg,
   aggregateRepository,
   eventHelperRepository,
   standardRepository) {
-  return async function() {
-    let pool = await pingDB();
+  return async function(options) {
+    let pool = await pingDB(options);
     pool.on('error', async err => {
       console.log(`==========pg pool error==========`);
       console.log(err);
