@@ -1,12 +1,8 @@
-module.exports = function(pg, config, asyncretry) {
+module.exports = function(pg, asyncretry) {
   let pool;
-  const ping = async function(bail, number) {
+  const ping = async function(configs, bail, number) {
     console.log('attempt to connect to the db number', number, new Date().toString());
     if (!pool) {
-      const configs = config.configs.children.postgres.config;
-      console.log(`==========configs=========`);
-      console.log(configs);
-      console.log(`==========END configs=========`);
       pool = new pg.Pool(configs);
     }
     const result = await pool.query(
@@ -22,9 +18,9 @@ module.exports = function(pg, config, asyncretry) {
     return pool;
   };
 
-  return () => {
-    return asyncretry((bail, number) => ping(bail, number),
-      Object.assign({ retries: 5 }, config.configs.children.postgres.retry)
+  return configs => {
+    return asyncretry((bail, number) => ping(configs, bail, number),
+      Object.assign({ retries: 5 }, {})
     );
   };
 };
