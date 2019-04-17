@@ -1,6 +1,6 @@
 module.exports = function(eventWorkflow, concurrentqueue) {
 
-  return function(source, handler) {
+  return function(source, handler, noRetry) {
 
     const processor = async x => {
       // horrible violation of open-closed principle
@@ -8,10 +8,10 @@ module.exports = function(eventWorkflow, concurrentqueue) {
       const baseFunc = handler.baseHandler ? handler.baseHandler[x.eventName] : undefined;
       let result = Promise.resolve();
       if (baseFunc) {
-        result = await eventWorkflow(x, handler.baseHandlerName, baseFunc.bind(handler.baseHandler));
+        result = await eventWorkflow(x, handler.baseHandlerName, baseFunc.bind(handler.baseHandler), noRetry);
       }
       if (func) {
-        result = await eventWorkflow(x, handler.handlerName, func.bind(handler));
+        result = await eventWorkflow(x, handler.handlerName, func.bind(handler), noRetry);
       }
       return result;
     };
