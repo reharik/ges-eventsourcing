@@ -20,14 +20,16 @@ module.exports = function(nodeeventstoreclient, pingES, logger) {
           gesConnection.on('closed', reason => {
             logger.info(`ES gesConnection: ${gesConnection._connectionName} closed, reason:`, reason);
             logger.info('Connection to GES lost. Terminating this process.');
+            gesConnection.removeAllListeners();
             process.exit(-1); //eslint-disable-line no-process-exit
           });
           return res(gesConnection);
         });
       })
-        .catch(err =>
-          logger.error(`Error occurred on ES _connectionName: ${gesConnection._connectionName}`, err)
-        );
+        .catch(err => {
+          gesConnection.removeAllListeners();
+          logger.error(`Error occurred on ES _connectionName: ${gesConnection._connectionName}`, err);
+        });
     }
   };
 };

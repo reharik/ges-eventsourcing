@@ -40,7 +40,7 @@ module.exports = function(
       eventStream = 'command') {
       // fortify commands with metadata like date and user
       let conn = await connection;
-      command.createDate = command.createDate || new Date();
+      command.createdDate = command.createdDate || new Date();
       let event = nodeeventstoreclient.createJsonEventData(
         uuid.v4(),
         command,
